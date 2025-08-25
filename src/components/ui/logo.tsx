@@ -16,11 +16,11 @@ export const Logo: React.FC<LogoProps> = ({
   mobileCompact = false
 }) => {
   const sizeClasses = {
-    xs: "w-8 h-8 sm:w-10 sm:h-10",
-    sm: "w-10 h-10 sm:w-14 sm:h-14",
-    md: "w-12 h-12 sm:w-18 sm:h-18", 
-    lg: "w-16 h-16 sm:w-24 sm:h-24",
-    xl: "w-20 h-20 sm:w-28 sm:h-28"
+    xs: "w-6 h-6 sm:w-8 sm:h-8",
+    sm: "w-8 h-8 sm:w-12 sm:h-12",
+    md: "w-10 h-10 sm:w-16 sm:h-16", 
+    lg: "w-12 h-12 sm:w-20 sm:h-20",
+    xl: "w-16 h-16 sm:w-24 sm:h-24"
   }
 
   const textClasses = {
@@ -38,9 +38,9 @@ export const Logo: React.FC<LogoProps> = ({
   }
 
   return (
-    <div className={`flex items-center justify-center gap-2 sm:gap-3 ${className}`}>
+    <div className={`flex items-center gap-2 sm:gap-3 ${className}`}>
       <img 
-        src="/logo-no-text.png" 
+        src="/logo.png" 
         alt="Code Brew Labs" 
         className={`${sizeClasses[size]} object-contain drop-shadow-sm rounded-lg`}
         draggable={false}
