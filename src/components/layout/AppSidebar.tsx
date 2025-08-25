@@ -148,7 +148,7 @@ export default function AppSidebar({ isCollapsed = false, onClose, isMobile = fa
       </div>
 
       {/* Content - Scrollable Dashboard + Categories */}
-      <div className={`flex-1 overflow-y-auto space-y-2 transition-all duration-300 ${
+      <div className={`flex-1 overflow-y-auto no-scrollbar space-y-2 transition-all duration-300 ${
         isMobile ? 'px-2 py-4' : isCollapsed ? 'px-1 py-2' : 'px-2 py-4'
       }`}>
         {/* Dashboard */}

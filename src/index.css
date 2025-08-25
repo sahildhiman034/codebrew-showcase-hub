@@ -183,10 +183,22 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+  }
+
+  body::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
   }
 
   html {
     scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+  }
+
+  html::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
   }
 
   /* Improved scrolling behavior */
@@ -345,22 +357,22 @@
 
   /* Professional Scrollbar Styling */
   .scrollbar-hide {
-    scrollbar-width: thin;
-    scrollbar-color: transparent transparent;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
   }
   
   .scrollbar-hide::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
+    display: none; /* Safari and Chrome */
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .no-scrollbar {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
   }
   
-  .scrollbar-hide::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  
-  .scrollbar-hide::-webkit-scrollbar-thumb {
-    background: transparent;
-    border-radius: 2px;
+  .no-scrollbar::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
   }
 
   /* Smooth scrolling for categories */

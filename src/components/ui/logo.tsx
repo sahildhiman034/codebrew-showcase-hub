@@ -11,7 +11,7 @@ interface LogoProps {
 export const Logo: React.FC<LogoProps> = ({ 
   size = "md", 
   className = "", 
-  showText = true,
+  showText = false, // Changed default to false
   variant = "default",
   mobileCompact = false
 }) => {
