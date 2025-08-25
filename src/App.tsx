@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Logo } from "@/components/ui/logo";
+import { AIChatbot } from "@/components/ui/ai-chatbot";
 
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
@@ -90,6 +91,10 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <AIChatbot 
+          position="bottom-right"
+          theme="light"
+        />
         <BrowserRouter>
           <Routes>
             {/* Public Routes */}

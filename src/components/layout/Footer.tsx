@@ -154,37 +154,7 @@ export const Footer: React.FC = () => {
         </div>
       </div>
 
-      {/* Floating Chat Button */}
-      <div className="fixed right-6 bottom-20 z-50">
-        {/* Chat with us */}
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="flex items-center gap-2"
-        >
-          <Button 
-            className="bg-white text-gray-700 hover:bg-gray-50 rounded-full shadow-lg border border-gray-200 px-3 py-2 text-sm"
-            onClick={() => handleContactClick('chat')}
-          >
-            <span className="mr-1">👋</span>
-            Chat with us
-          </Button>
-          
-          {/* Notification Chat */}
-          <div className="relative">
-            <Button 
-              size="icon" 
-              className="w-10 h-10 bg-blue-500 hover:bg-blue-600 rounded-full shadow-lg"
-              onClick={() => handleContactClick('chat')}
-            >
-              <MessageCircle className="h-5 w-5 text-white" />
-            </Button>
-            <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-              <span className="text-white text-xs font-bold">1</span>
-            </div>
-          </div>
-        </motion.div>
-      </div>
+
     </footer>
   )
 }
