@@ -3,7 +3,21 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://mscltrtuhipjdelehbre.supabase.co'
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zY2x0cnR1aGlwamRlbGVoYnJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU5Mjg2OTUsImV4cCI6MjA3MTUwNDY5NX0.Fmv1atNhxk9NBV9hwwRGgoHdE6ocE5y0vh4AxJhR_aI'
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Create Supabase client with production-ready configuration
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    // Disable automatic redirects to prevent localhost issues
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: false, // Prevent automatic session detection from URL
+    flowType: 'pkce'
+  },
+  global: {
+    headers: {
+      'X-Client-Info': 'codebrew-showcase-hub'
+    }
+  }
+})
 
 // Database Types
 export interface Category {
