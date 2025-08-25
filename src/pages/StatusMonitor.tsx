@@ -446,15 +446,15 @@ export default function StatusMonitor() {
           <div className="flex items-center gap-3">
             <div className="p-2 bg-green-100 rounded-lg">
               <Activity className="h-6 w-6 text-green-600" />
-            </div>
-            <div>
+                </div>
+                <div>
               <h1 className="text-2xl sm:text-3xl font-bold">Live Client Status Monitor</h1>
               <p className="text-muted-foreground text-sm sm:text-base">
                 Real-time website monitoring & uptime tracking
               </p>
-            </div>
-          </div>
-        </div>
+                </div>
+                </div>
+              </div>
         
         <div className="flex flex-col sm:flex-row gap-2">
           <Button 
@@ -480,20 +480,20 @@ export default function StatusMonitor() {
       </motion.div>
 
       {/* Integration Status */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-      >
-        <Card className="card-elevated">
+        >
+          <Card className="card-elevated">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Settings className="h-5 w-5 text-primary" />
               Integration Status
             </CardTitle>
             <CardDescription>Current status of external service integrations</CardDescription>
-          </CardHeader>
-          <CardContent>
+            </CardHeader>
+            <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="flex items-center gap-3 p-3 rounded-lg bg-green-50 border border-green-200">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
@@ -539,10 +539,10 @@ export default function StatusMonitor() {
               </div>
               <Building2 className="h-8 w-8 text-blue-500" />
             </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="card-elevated">
+            </CardContent>
+          </Card>
+
+          <Card className="card-elevated">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -553,10 +553,10 @@ export default function StatusMonitor() {
               </div>
               <CheckCircle className="h-8 w-8 text-green-500" />
             </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="card-elevated">
+            </CardContent>
+          </Card>
+
+          <Card className="card-elevated">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -567,10 +567,10 @@ export default function StatusMonitor() {
               </div>
               <WifiOff className="h-8 w-8 text-red-500" />
             </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="card-elevated">
+            </CardContent>
+          </Card>
+
+          <Card className="card-elevated">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -579,9 +579,9 @@ export default function StatusMonitor() {
               </div>
               <Clock className="h-8 w-8 text-purple-500" />
             </div>
-          </CardContent>
-        </Card>
-      </motion.div>
+            </CardContent>
+          </Card>
+        </motion.div>
 
       {/* Client Status Grid */}
       <motion.div
@@ -604,7 +604,7 @@ export default function StatusMonitor() {
               <div className="flex items-center justify-center py-8">
                 <RefreshCw className="h-6 w-6 animate-spin mr-2" />
                 <span>Loading client statuses...</span>
-              </div>
+          </div>
             ) : clientStatuses.length === 0 ? (
               <div className="text-center py-8">
                 <Globe className="h-12 w-12 text-gray-400 mx-auto mb-4" />
@@ -614,12 +614,12 @@ export default function StatusMonitor() {
                   <Plus className="h-4 w-4 mr-2" />
                   Add First Client
                 </Button>
-              </div>
+        </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {clientStatuses.map((client, index) => (
-                  <motion.div
-                    key={client.id}
+          {clientStatuses.map((client, index) => (
+            <motion.div
+              key={client.id}
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.3, delay: index * 0.1 }}
@@ -628,7 +628,7 @@ export default function StatusMonitor() {
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-2">
-                          {getStatusIcon(client.status, client.uptime_status)}
+                      {getStatusIcon(client.status, client.uptime_status)}
                           <h3 className="font-semibold text-sm sm:text-base truncate">{client.name}</h3>
                         </div>
                         
@@ -652,10 +652,10 @@ export default function StatusMonitor() {
                           )}
                           
                           {client.response_time && (
-                            <p className="text-xs text-muted-foreground">
+                          <p className="text-xs text-muted-foreground">
                               Response: {client.response_time}ms
-                            </p>
-                          )}
+                          </p>
+                        )}
                           
                           {client.uptime_ratio && (
                             <div className="space-y-1">
@@ -670,8 +670,8 @@ export default function StatusMonitor() {
                           {client.last_checked && (
                             <p className="text-xs text-muted-foreground">
                               Last checked: {new Date(client.last_checked).toLocaleString()}
-                            </p>
-                          )}
+                          </p>
+                        )}
                         </div>
                       </div>
                       
@@ -694,12 +694,12 @@ export default function StatusMonitor() {
                         </Button>
                       </div>
                     </div>
-                  </motion.div>
-                ))}
-              </div>
+            </motion.div>
+          ))}
+        </div>
             )}
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
       </motion.div>
 
       {/* Add Client Dialog */}
@@ -777,7 +777,7 @@ export default function StatusMonitor() {
                   onChange={(e) => setEditingClient({ ...editingClient, name: e.target.value })}
                   placeholder="Enter client name"
                 />
-              </div>
+                </div>
               <div>
                 <Label htmlFor="edit-website_url">Website URL</Label>
                 <Input
@@ -786,7 +786,7 @@ export default function StatusMonitor() {
                   onChange={(e) => setEditingClient({ ...editingClient, website_url: e.target.value })}
                   placeholder="https://example.com"
                 />
-              </div>
+                </div>
               <div>
                 <Label htmlFor="edit-status">Status</Label>
                 <select
@@ -799,7 +799,7 @@ export default function StatusMonitor() {
                   <option value="inactive">Inactive</option>
                   <option value="maintenance">Maintenance</option>
                 </select>
-              </div>
+                </div>
               <div className="flex gap-2">
                 <Button onClick={handleUpdateClient} className="flex-1">
                   Update Client
@@ -809,7 +809,7 @@ export default function StatusMonitor() {
                 </Button>
               </div>
             </div>
-          )}
+      )}
         </DialogContent>
       </Dialog>
     </div>
