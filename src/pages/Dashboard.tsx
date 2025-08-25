@@ -152,19 +152,19 @@ export default function Dashboard() {
   }
 
   return (
-    <div>
+    <div className="space-y-6">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="flex items-center justify-between"
+        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
       >
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           <Logo size="lg" showText={false} />
           <div>
-            <h1 className="text-3xl font-bold gradient-text">Welcome to Code Brew Labs Hub</h1>
-            <p className="text-muted-foreground text-lg">
+            <h1 className="text-2xl sm:text-3xl font-bold gradient-text">Welcome to Code Brew Labs Hub</h1>
+            <p className="text-muted-foreground text-sm sm:text-lg">
               Your Central Command Center for Portfolio Management & Client Success
             </p>
           </div>
@@ -174,6 +174,7 @@ export default function Dashboard() {
           disabled={loading}
           variant="outline"
           size="sm"
+          className="w-full sm:w-auto"
         >
           <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
           Refresh
@@ -185,7 +186,7 @@ export default function Dashboard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
       >
         {stats.map((stat, index) => (
           <motion.div
@@ -202,7 +203,7 @@ export default function Dashboard() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
+                <div className="text-xl sm:text-2xl font-bold">{stat.value}</div>
                 <p className="text-xs text-muted-foreground">{stat.description}</p>
               </CardContent>
             </Card>
@@ -210,7 +211,7 @@ export default function Dashboard() {
         ))}
       </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
         {/* Recent Projects */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -232,16 +233,17 @@ export default function Dashboard() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: 0.3 + index * 0.1 }}
-                  className="flex items-center justify-between p-3 rounded-lg bg-surface hover:bg-surface-muted transition-colors"
+                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 rounded-lg bg-surface hover:bg-surface-muted transition-colors gap-2"
                 >
                   <div className="space-y-1">
-                    <p className="font-medium">{project.name}</p>
-                    <p className="text-sm text-muted-foreground">{project.category}</p>
+                    <p className="font-medium text-sm sm:text-base">{project.name}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{project.category}</p>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
                     <Badge 
                       variant={project.status === 'online' ? 'default' : project.status === 'maintenance' ? 'secondary' : 'destructive'}
                       className={`
+                        w-fit
                         ${project.status === 'online' ? 'status-online' : ''}
                         ${project.status === 'maintenance' ? 'status-warning' : ''}
                         ${project.status === 'offline' ? 'status-offline' : ''}
@@ -331,7 +333,7 @@ export default function Dashboard() {
             <CardDescription>Real-time monitoring of all portfolio categories • Last updated: {new Date().toLocaleTimeString()}</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {categoryMonitoring.map((category, index) => (
                 <motion.div
                   key={category.id}
@@ -340,11 +342,12 @@ export default function Dashboard() {
                   transition={{ duration: 0.3, delay: 0.4 + index * 0.1 }}
                   className="p-4 border rounded-lg hover:shadow-md transition-all"
                 >
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-semibold text-gray-900">{category.name}</h3>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 gap-2">
+                    <h3 className="font-semibold text-gray-900 text-sm sm:text-base">{category.name}</h3>
                     <Badge 
                       variant={category.status === 'online' ? 'default' : category.status === 'maintenance' ? 'secondary' : 'destructive'}
                       className={`
+                        w-fit
                         ${category.status === 'online' ? 'bg-green-100 text-green-800' : ''}
                         ${category.status === 'maintenance' ? 'bg-yellow-100 text-yellow-800' : ''}
                         ${category.status === 'offline' ? 'bg-red-100 text-red-800' : ''}
@@ -357,7 +360,7 @@ export default function Dashboard() {
                     </Badge>
                   </div>
                   
-                  <div className="space-y-2 text-sm">
+                  <div className="space-y-2 text-xs sm:text-sm">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Uptime:</span>
                       <span className="font-medium">{category.uptime}%</span>
@@ -396,8 +399,6 @@ export default function Dashboard() {
         </Card>
       </motion.div>
 
-
-
       {/* Response Time Charts */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -414,7 +415,9 @@ export default function Dashboard() {
             <CardDescription>Real-time monitoring of website performance in milliseconds</CardDescription>
           </CardHeader>
           <CardContent>
-            <SimpleChart />
+            <div className="w-full overflow-x-auto">
+              <SimpleChart />
+            </div>
           </CardContent>
         </Card>
       </motion.div>
@@ -432,8 +435,8 @@ export default function Dashboard() {
                 <Globe className="w-8 h-8 text-primary-foreground" />
               </div>
               <div className="space-y-2">
-                <h3 className="text-2xl font-bold">Ready to explore our portfolio?</h3>
-                <p className="text-muted-foreground">
+                <h3 className="text-xl sm:text-2xl font-bold">Ready to explore our portfolio?</h3>
+                <p className="text-muted-foreground text-sm sm:text-base">
                   Discover our diverse range of projects across different industries and technologies
                 </p>
               </div>

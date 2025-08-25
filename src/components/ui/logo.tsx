@@ -5,20 +5,22 @@ interface LogoProps {
   className?: string
   showText?: boolean
   variant?: "default" | "white" | "dark"
+  mobileCompact?: boolean
 }
 
 export const Logo: React.FC<LogoProps> = ({ 
   size = "md", 
   className = "", 
   showText = true,
-  variant = "default"
+  variant = "default",
+  mobileCompact = false
 }) => {
   const sizeClasses = {
-    xs: "w-24 h-24",
-    sm: "w-28 h-28",
-    md: "w-32 h-32", 
-    lg: "w-40 h-40",
-    xl: "w-48 h-48"
+    xs: "w-6 h-6 sm:w-8 sm:h-8",
+    sm: "w-8 h-8 sm:w-12 sm:h-12",
+    md: "w-10 h-10 sm:w-16 sm:h-16", 
+    lg: "w-12 h-12 sm:w-20 sm:h-20",
+    xl: "w-16 h-16 sm:w-24 sm:h-24"
   }
 
   const textClasses = {
@@ -27,8 +29,16 @@ export const Logo: React.FC<LogoProps> = ({
     dark: "text-gray-900"
   }
 
+  const textSizeClasses = {
+    xs: "text-xs sm:text-sm",
+    sm: "text-sm sm:text-base",
+    md: "text-base sm:text-lg", 
+    lg: "text-lg sm:text-xl",
+    xl: "text-xl sm:text-2xl"
+  }
+
   return (
-    <div className={`flex items-center ${className}`}>
+    <div className={`flex items-center gap-2 sm:gap-3 ${className}`}>
       <img 
         src="/src/assets/code-brew-labs-logo.png" 
         alt="Code Brew Labs" 
@@ -37,8 +47,16 @@ export const Logo: React.FC<LogoProps> = ({
       />
       {showText && (
         <div className="flex flex-col">
-          <span className={`font-bold text-lg ${textClasses[variant]}`}>CODE BREW</span>
-          <span className={`font-bold text-sm ${textClasses[variant]}/80`}>LABS</span>
+          <span className={`font-bold ${textSizeClasses[size]} ${textClasses[variant]} ${
+            mobileCompact ? 'hidden sm:block' : ''
+          }`}>
+            CODE BREW
+          </span>
+          <span className={`font-bold text-xs sm:text-sm ${textClasses[variant]}/80 ${
+            mobileCompact ? 'hidden sm:block' : ''
+          }`}>
+            LABS
+          </span>
         </div>
       )}
     </div>

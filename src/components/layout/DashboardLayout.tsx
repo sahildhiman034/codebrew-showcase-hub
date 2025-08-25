@@ -1,12 +1,13 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useLocation } from "react-router-dom"
 import AppSidebar from "./AppSidebar"
 import { Footer } from "./Footer"
 import { AdminFooter } from "./AdminFooter"
 import { Logo } from "@/components/ui/logo"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { PanelLeft } from "lucide-react"
+import { PanelLeft, X } from "lucide-react"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 interface DashboardLayoutProps {
   children: React.ReactNode
@@ -14,7 +15,23 @@ interface DashboardLayoutProps {
 
 export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const location = useLocation()
+  const isMobile = useIsMobile()
+  const [sidebarOpen, setSidebarOpen] = useState(!isMobile)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  
+  // Auto-close sidebar on mobile when route changes
+  useEffect(() => {
+    if (isMobile) {
+      setSidebarOpen(false)
+    }
+  }, [location.pathname, isMobile])
+
+  // Auto-collapse sidebar on mobile
+  useEffect(() => {
+    if (isMobile) {
+      setSidebarCollapsed(true)
+    }
+  }, [isMobile])
   
   const getPageTitle = () => {
     const path = location.pathname
@@ -48,41 +65,82 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
     return "Professional Portfolio & Client Management Platform"
   }
 
+  const toggleSidebar = () => {
+    if (isMobile) {
+      setSidebarOpen(!sidebarOpen)
+    } else {
+      setSidebarCollapsed(!sidebarCollapsed)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Sidebar - Fixed Position */}
-      <div className={`fixed top-0 left-0 h-full z-40 transition-all duration-300 ${sidebarCollapsed ? 'w-16' : 'w-64'}`}>
-        <AppSidebar isCollapsed={sidebarCollapsed} />
-      </div>
+      {/* Mobile Overlay */}
+      <AnimatePresence>
+        {isMobile && sidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Sidebar */}
+      <AnimatePresence>
+        {(!isMobile || sidebarOpen) && (
+          <motion.div
+            initial={isMobile ? { x: -300 } : { width: sidebarCollapsed ? 64 : 256 }}
+            animate={isMobile ? { x: 0 } : { width: sidebarCollapsed ? 64 : 256 }}
+            exit={isMobile ? { x: -300 } : {}}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className={`fixed top-0 left-0 h-full z-50 ${
+              isMobile ? 'w-80' : ''
+            }`}
+          >
+            <AppSidebar 
+              isCollapsed={sidebarCollapsed} 
+              onClose={() => setSidebarOpen(false)}
+              isMobile={isMobile}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
       
-      {/* Main Content Area - With proper margin */}
-      <div className={`transition-all duration-300 ${sidebarCollapsed ? 'ml-16' : 'ml-64'}`}>
+      {/* Main Content Area */}
+      <div className={`transition-all duration-300 ${
+        isMobile ? 'ml-0' : sidebarCollapsed ? 'ml-16' : 'ml-64'
+      }`}>
         {/* Header */}
-        <header className="h-16 bg-card border-b border-border flex items-center px-6 shadow-sm z-30 relative">
+        <header className="h-16 bg-card border-b border-border flex items-center px-4 lg:px-6 shadow-sm z-30 relative">
           <Button
             variant="ghost"
             size="icon"
-            className="mr-4"
-            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            className="mr-2 lg:mr-4"
+            onClick={toggleSidebar}
           >
-            <PanelLeft className="h-4 w-4" />
+            {isMobile ? (
+              sidebarOpen ? <X className="h-4 w-4" /> : <PanelLeft className="h-4 w-4" />
+            ) : (
+              <PanelLeft className="h-4 w-4" />
+            )}
           </Button>
           
-          {/* Dashboard text on the left */}
-          <div className="flex items-center mr-6">
-            <h2 className="text-lg font-bold text-black">
-              Dashboard
+          {/* Page Title */}
+          <div className="flex items-center mr-4 lg:mr-6 flex-1">
+            <h2 className="text-lg font-bold text-black truncate">
+              {getPageTitle()}
             </h2>
           </div>
           
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="flex-1 flex items-center gap-4"
-          >
-            {/* Logo removed */}
-          </motion.div>
+          {/* Mobile Logo */}
+          {isMobile && (
+            <div className="flex items-center">
+              <Logo size="sm" showText={false} mobileCompact={true} />
+            </div>
+          )}
         </header>
 
         {/* Main Content */}
@@ -91,7 +149,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
-            className="p-6 max-w-full"
+            className="p-4 lg:p-6 max-w-full"
           >
             {children}
           </motion.div>

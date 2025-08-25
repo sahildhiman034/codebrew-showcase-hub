@@ -30,7 +30,8 @@ import {
   Train,
   Bike,
   Bus,
-  Truck
+  Truck,
+  X
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -70,9 +71,11 @@ const iconMap: { [key: string]: any } = {
 
 interface AppSidebarProps {
   isCollapsed?: boolean
+  onClose?: () => void
+  isMobile?: boolean
 }
 
-export default function AppSidebar({ isCollapsed = false }: AppSidebarProps) {
+export default function AppSidebar({ isCollapsed = false, onClose, isMobile = false }: AppSidebarProps) {
   const navigate = useNavigate()
   const location = useLocation()
   const { user, signOut, isAdmin, customUser } = useAuth()
@@ -82,6 +85,13 @@ export default function AppSidebar({ isCollapsed = false }: AppSidebarProps) {
   const handleLogout = async () => {
     await signOut()
     navigate('/')
+  }
+
+  const handleNavigation = (path: string) => {
+    navigate(path)
+    if (isMobile && onClose) {
+      onClose()
+    }
   }
 
   const isActive = (path: string) => location.pathname === path
@@ -117,33 +127,51 @@ export default function AppSidebar({ isCollapsed = false }: AppSidebarProps) {
   }, [])
 
   return (
-    <div className={`flex flex-col h-screen bg-[#2F3C51] text-white transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'}`}>
+    <div className={`flex flex-col h-screen bg-[#2F3C51] text-white transition-all duration-300 ${
+      isMobile ? 'w-80' : isCollapsed ? 'w-16' : 'w-64'
+    }`}>
       {/* Header - Fixed Logo */}
-      <div className={`border-b border-gray-600 flex justify-center transition-all duration-300 ${isCollapsed ? 'p-2' : 'p-4'}`}>
-        <Logo size={isCollapsed ? "sm" : "lg"} showText={false} />
+      <div className={`border-b border-gray-600 flex justify-between items-center transition-all duration-300 ${
+        isMobile ? 'p-4' : isCollapsed ? 'p-2' : 'p-4'
+      }`}>
+        <Logo size={isCollapsed && !isMobile ? "sm" : "lg"} showText={!isCollapsed || isMobile} />
+        {isMobile && onClose && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className="text-white hover:bg-gray-600"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        )}
       </div>
 
       {/* Content - Scrollable Dashboard + Categories */}
-      <div className={`flex-1 overflow-y-auto space-y-2 transition-all duration-300 ${isCollapsed ? 'px-1 py-2' : 'px-2 py-4'}`}>
+      <div className={`flex-1 overflow-y-auto space-y-2 transition-all duration-300 ${
+        isMobile ? 'px-2 py-4' : isCollapsed ? 'px-1 py-2' : 'px-2 py-4'
+      }`}>
         {/* Dashboard */}
         <div 
           className={`sidebar-item flex items-center gap-2 font-medium cursor-pointer transition-colors ${
             isActive('/dashboard') 
               ? 'bg-green-400 text-white rounded-lg' 
               : 'hover:bg-gray-600 rounded-lg'
-          } ${isCollapsed ? 'px-2 py-3 justify-center' : 'px-3 py-3'}`}
-          onClick={() => navigate('/dashboard')}
+          } ${isMobile ? 'px-3 py-3' : isCollapsed ? 'px-2 py-3 justify-center' : 'px-3 py-3'}`}
+          onClick={() => handleNavigation('/dashboard')}
         >
           <LayoutDashboard className="h-4 w-4" />
-          {!isCollapsed && <span>Dashboard</span>}
+          {(!isCollapsed || isMobile) && <span>Dashboard</span>}
         </div>
 
         {/* Categories Section */}
-        {!isCollapsed && <h4 className="text-sm text-gray-400 mt-4 mb-2 px-3">CATEGORIES</h4>}
+        {(!isCollapsed || isMobile) && <h4 className="text-sm text-gray-400 mt-4 mb-2 px-3">CATEGORIES</h4>}
         <div className="space-y-2">
           {loading ? (
-            <div className={`text-gray-400 text-sm ${isCollapsed ? 'px-2 py-2 text-center' : 'px-3 py-2'}`}>
-              {isCollapsed ? '...' : 'Loading categories...'}
+            <div className={`text-gray-400 text-sm ${
+              isMobile ? 'px-3 py-2' : isCollapsed ? 'px-2 py-2 text-center' : 'px-3 py-2'
+            }`}>
+              {isMobile || !isCollapsed ? 'Loading categories...' : '...'}
             </div>
           ) : (
             categories.map((category) => {
@@ -152,13 +180,13 @@ export default function AppSidebar({ isCollapsed = false }: AppSidebarProps) {
                 <div
                   key={category.id}
                   className={`sidebar-item flex items-center gap-2 cursor-pointer transition-colors hover:bg-gray-600 rounded-lg ${
-                    isCollapsed ? 'px-2 py-3 justify-center' : 'px-3 py-3'
+                    isMobile ? 'px-3 py-3' : isCollapsed ? 'px-2 py-3 justify-center' : 'px-3 py-3'
                   }`}
-                  onClick={() => navigate(`/category/${category.name.toLowerCase().replace(/\s+/g, '-')}`)}
-                  title={isCollapsed ? category.name : undefined}
+                  onClick={() => handleNavigation(`/category/${category.name.toLowerCase().replace(/\s+/g, '-')}`)}
+                  title={isCollapsed && !isMobile ? category.name : undefined}
                 >
                   <IconComponent className="h-4 w-4" />
-                  {!isCollapsed && <span>{category.name}</span>}
+                  {(!isCollapsed || isMobile) && <span>{category.name}</span>}
                 </div>
               )
             })
@@ -167,19 +195,21 @@ export default function AppSidebar({ isCollapsed = false }: AppSidebarProps) {
       </div>
 
       {/* Footer - Fixed Status + Admin Panel + Logout */}
-      <div className={`border-t border-gray-600 space-y-2 transition-all duration-300 ${isCollapsed ? 'px-1 py-2' : 'px-2 py-4'}`}>
+      <div className={`border-t border-gray-600 space-y-2 transition-all duration-300 ${
+        isMobile ? 'px-2 py-4' : isCollapsed ? 'px-1 py-2' : 'px-2 py-4'
+      }`}>
         {/* Status */}
         <div 
           className={`sidebar-item flex items-center gap-2 cursor-pointer transition-colors ${
             isActive('/status') 
               ? 'bg-green-400 text-white rounded-lg' 
               : 'hover:bg-gray-600 rounded-lg'
-          } ${isCollapsed ? 'px-2 py-3 justify-center' : 'px-3 py-3'}`}
-          onClick={() => navigate('/status')}
-          title={isCollapsed ? 'Status' : undefined}
+          } ${isMobile ? 'px-3 py-3' : isCollapsed ? 'px-2 py-3 justify-center' : 'px-3 py-3'}`}
+          onClick={() => handleNavigation('/status')}
+          title={isCollapsed && !isMobile ? 'Status' : undefined}
         >
           <BarChart3 className="h-4 w-4" />
-          {!isCollapsed && <span>Status</span>}
+          {(!isCollapsed || isMobile) && <span>Status</span>}
         </div>
 
         {/* Admin Panel - Only visible to admins */}
@@ -189,25 +219,25 @@ export default function AppSidebar({ isCollapsed = false }: AppSidebarProps) {
               location.pathname.startsWith('/admin') 
                 ? 'bg-green-400 text-white rounded-lg' 
                 : 'hover:bg-gray-600 rounded-lg'
-            } ${isCollapsed ? 'px-2 py-3 justify-center' : 'px-3 py-3'}`}
-            onClick={() => navigate('/admin/categories')}
-            title={isCollapsed ? 'Admin Panel' : undefined}
+            } ${isMobile ? 'px-3 py-3' : isCollapsed ? 'px-2 py-3 justify-center' : 'px-3 py-3'}`}
+            onClick={() => handleNavigation('/admin/categories')}
+            title={isCollapsed && !isMobile ? 'Admin Panel' : undefined}
           >
             <Settings className="h-4 w-4" />
-            {!isCollapsed && <span>Admin Panel</span>}
+            {(!isCollapsed || isMobile) && <span>Admin Panel</span>}
           </div>
         )}
 
         {/* Logout */}
         <div 
           className={`sidebar-item flex items-center gap-2 cursor-pointer transition-colors hover:bg-gray-600 rounded-lg ${
-            isCollapsed ? 'px-2 py-3 justify-center' : 'px-3 py-3'
+            isMobile ? 'px-3 py-3' : isCollapsed ? 'px-2 py-3 justify-center' : 'px-3 py-3'
           }`}
           onClick={handleLogout}
-          title={isCollapsed ? 'Log Out' : undefined}
+          title={isCollapsed && !isMobile ? 'Log Out' : undefined}
         >
           <LogOut className="h-4 w-4" />
-          {!isCollapsed && <span>Log Out</span>}
+          {(!isCollapsed || isMobile) && <span>Log Out</span>}
         </div>
       </div>
     </div>

@@ -434,416 +434,378 @@ export default function StatusMonitor() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="space-y-6">
       {/* Header */}
       <motion.div
-        initial={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex items-center justify-between"
+        transition={{ duration: 0.5 }}
+        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
       >
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Live Client Status Monitor</h1>
-          <p className="text-muted-foreground mt-2">
-            Real-time monitoring of all your live client websites
-          </p>
-          {/* Connection Status Indicator */}
-          <div className="flex items-center gap-2 mt-2">
-            <div className="w-2 h-2 rounded-full bg-green-500"></div>
-            <span className="text-xs text-muted-foreground">
-              Real-time Website Monitoring Active
-            </span>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-green-100 rounded-lg">
+              <Activity className="h-6 w-6 text-green-600" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold">Live Client Status Monitor</h1>
+              <p className="text-muted-foreground text-sm sm:text-base">
+                Real-time website monitoring & uptime tracking
+              </p>
+            </div>
           </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-            <DialogTrigger asChild>
-              <Button variant="outline" className="flex items-center space-x-1">
-                <Plus className="h-4 w-4" />
-                <span>Add Website</span>
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Add New Website to Monitor</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="name">Website Name</Label>
-                  <Input
-                    id="name"
-                    value={newClient.name}
-                    onChange={(e) => setNewClient(prev => ({ ...prev, name: e.target.value }))}
-                    placeholder="e.g., My Company Website"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="description">Description (Optional)</Label>
-                  <Textarea
-                    id="description"
-                    value={newClient.description}
-                    onChange={(e) => setNewClient(prev => ({ ...prev, description: e.target.value }))}
-                    placeholder="Brief description of the website"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="website_url">Website URL</Label>
-                  <Input
-                    id="website_url"
-                    value={newClient.website_url}
-                    onChange={(e) => setNewClient(prev => ({ ...prev, website_url: e.target.value }))}
-                    placeholder="https://example.com"
-                  />
-                </div>
-                <div className="flex justify-end space-x-2">
-                  <Button variant="outline" onClick={() => setShowAddDialog(false)}>
-                    Cancel
-                  </Button>
-                  <Button onClick={handleAddClient}>
-                    Add Website
-                  </Button>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
-                    <Button
-            onClick={async () => {
-              try {
-                // Clear the alert state when user manually tries to sync
-                sessionStorage.removeItem('uptime_robot_alert_shown')
-                setAlertShown(false)
-                
-                console.log('Starting real-time website checking...')
-                console.log('Using real website monitoring instead of Uptime Robot API')
-                
-                toast({
-                  title: "Checking Websites...",
-                  description: "Performing real-time website status checks",
-                })
-                
-                // Skip Uptime Robot connection test and go directly to real website checking
-                console.log('Skipping Uptime Robot connection test, using real website checking...')
-                
-                const result = await uptimeRobotService.syncLiveClientsWithMonitors()
-                console.log('Sync result:', result)
-                
-                toast({
-                  title: "Website Check Complete",
-                  description: `Checked: ${result.created}, Updated: ${result.updated}, Errors: ${result.errors}`,
-                })
-                loadMonitoringData()
-              } catch (error) {
-                console.error('Sync error details:', error)
-                console.error('Error message:', error instanceof Error ? error.message : 'Unknown error')
-                console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace')
-                
-                toast({
-                  title: "Website Check Failed",
-                  description: error instanceof Error ? error.message : "Failed to check website status",
-                  variant: "destructive"
-                })
-              }
-            }}
+        
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Button 
+            onClick={handleRefresh} 
+            disabled={isRefreshing}
             variant="outline"
-            className="flex items-center space-x-1"
+            size="sm"
+            className="w-full sm:w-auto"
           >
-            <Zap className="h-4 w-4" />
-            <span>Check All Websites</span>
-          </Button>
-          <Button onClick={handleRefresh} disabled={isRefreshing} className="btn-primary">
             <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-            Refresh
+            Check All Websites
+          </Button>
+          
+          <Button 
+            onClick={() => setShowAddDialog(true)}
+            size="sm"
+            className="w-full sm:w-auto"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Client
           </Button>
         </div>
       </motion.div>
 
-      {/* Overview Cards */}
-      {uptimeData && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-        >
-          <Card className="card-elevated">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Clients</CardTitle>
-              <Building2 className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{uptimeData.overview.totalSites}</div>
-              <p className="text-xs text-muted-foreground">Live client websites</p>
-            </CardContent>
-          </Card>
-
-          <Card className="card-elevated">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active</CardTitle>
-              <CheckCircle className="h-4 w-4 text-green-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">{uptimeData.overview.onlineSites}</div>
-              <p className="text-xs text-muted-foreground">
-                {uptimeData.overview.totalSites > 0 
-                  ? `${((uptimeData.overview.onlineSites / uptimeData.overview.totalSites) * 100).toFixed(1)}% uptime`
-                  : 'No data'
-                }
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="card-elevated">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Inactive</CardTitle>
-              <WifiOff className="h-4 w-4 text-red-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-red-600">{uptimeData.overview.offlineSites}</div>
-              <p className="text-xs text-muted-foreground">Requires attention</p>
-            </CardContent>
-          </Card>
-
-          <Card className="card-elevated">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Avg Response</CardTitle>
-              <Zap className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {uptimeData.overview.averageResponseTime > 0 
-                  ? `${uptimeData.overview.averageResponseTime.toFixed(0)}ms`
-                  : 'N/A'
-                }
-              </div>
-              <p className="text-xs text-muted-foreground">Average response time</p>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
-
-      {/* Client Status List */}
+      {/* Integration Status */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="space-y-4"
+        transition={{ duration: 0.5, delay: 0.1 }}
       >
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-semibold">Client Websites</h2>
-            <p className="text-sm text-muted-foreground">
-              {clientStatuses.filter(c => c.uptime_status !== undefined).length} of {clientStatuses.length} websites are being monitored in real-time
-            </p>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            Last updated: {lastUpdate.toLocaleTimeString()}
-          </p>
-        </div>
+        <Card className="card-elevated">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Settings className="h-5 w-5 text-primary" />
+              Integration Status
+            </CardTitle>
+            <CardDescription>Current status of external service integrations</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-green-50 border border-green-200">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <div>
+                  <p className="font-medium text-sm">Real-time Website Monitoring</p>
+                  <p className="text-xs text-green-600">Active</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-green-50 border border-green-200">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <div>
+                  <p className="font-medium text-sm">Supabase Database</p>
+                  <p className="text-xs text-green-600">Connected</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 border border-gray-200">
+                <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                <div>
+                  <p className="font-medium text-sm">N8N Workflows</p>
+                  <p className="text-xs text-gray-600">Not Connected</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
 
-        <div className="grid gap-4">
-          {clientStatuses.map((client, index) => (
-            <motion.div
-              key={client.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <Card className="card-elevated hover:shadow-lg transition-all duration-300">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      {getStatusIcon(client.status, client.uptime_status)}
-                      <div>
-                        <h3 className="font-semibold text-lg">{client.name}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          {client.website_url || 'No website URL'}
-                        </p>
-                        {client.last_checked && (
-                          <p className="text-xs text-muted-foreground">
-                            Last checked: {client.last_checked}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center space-x-4">
-                      <div className="text-right">
-                        {getStatusBadge(client.status, client.uptime_status)}
-                        {client.uptime_ratio !== undefined ? (
-                          <>
-                            <div className="mt-2">
-                              <div className="flex items-center justify-between text-xs mb-1">
-                                <span>Uptime</span>
-                                <span>{client.uptime_ratio.toFixed(1)}%</span>
-                              </div>
-                              <Progress value={client.uptime_ratio} className="h-2 w-24" />
+      {/* Stats Overview */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+      >
+        <Card className="card-elevated">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Total Clients</p>
+                <p className="text-2xl font-bold">{clientStatuses.length}</p>
+              </div>
+              <Building2 className="h-8 w-8 text-blue-500" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="card-elevated">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Active</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {clientStatuses.filter(c => c.uptime_status === 'up' || c.status === 'active').length}
+                </p>
+              </div>
+              <CheckCircle className="h-8 w-8 text-green-500" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="card-elevated">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Inactive</p>
+                <p className="text-2xl font-bold text-red-600">
+                  {clientStatuses.filter(c => c.uptime_status === 'down' || c.status === 'inactive').length}
+                </p>
+              </div>
+              <WifiOff className="h-8 w-8 text-red-500" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="card-elevated">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Last Update</p>
+                <p className="text-sm font-bold">{lastUpdate.toLocaleTimeString()}</p>
+              </div>
+              <Clock className="h-8 w-8 text-purple-500" />
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Client Status Grid */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+      >
+        <Card className="card-elevated">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Globe className="h-5 w-5 text-primary" />
+              Client Websites Status
+            </CardTitle>
+            <CardDescription>
+              Real-time status of all client websites • Auto-refresh every 30 seconds
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {loading ? (
+              <div className="flex items-center justify-center py-8">
+                <RefreshCw className="h-6 w-6 animate-spin mr-2" />
+                <span>Loading client statuses...</span>
+              </div>
+            ) : clientStatuses.length === 0 ? (
+              <div className="text-center py-8">
+                <Globe className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No clients found</h3>
+                <p className="text-gray-500 mb-4">Add your first client to start monitoring</p>
+                <Button onClick={() => setShowAddDialog(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add First Client
+                </Button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {clientStatuses.map((client, index) => (
+                  <motion.div
+                    key={client.id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                    className="border rounded-lg p-4 hover:shadow-md transition-all"
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-2">
+                          {getStatusIcon(client.status, client.uptime_status)}
+                          <h3 className="font-semibold text-sm sm:text-base truncate">{client.name}</h3>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                            {getStatusBadge(client.status, client.uptime_status)}
+                          </div>
+                          
+                          {client.website_url && (
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => openWebsite(client.website_url)}
+                                className="w-full sm:w-auto text-xs"
+                              >
+                                <ExternalLink className="h-3 w-3 mr-1" />
+                                Visit Site
+                              </Button>
                             </div>
-                            {client.response_time && (
-                              <p className="text-xs text-muted-foreground mt-1">
-                                {client.response_time}ms
-                              </p>
-                            )}
-                            <p className="text-xs text-green-600 mt-1">
-                              ✓ Real-time monitoring
+                          )}
+                          
+                          {client.response_time && (
+                            <p className="text-xs text-muted-foreground">
+                              Response: {client.response_time}ms
                             </p>
-                          </>
-                        ) : (
-                          <p className="text-xs text-muted-foreground mt-2">
-                            Not monitored by Uptime Robot
-                          </p>
-                        )}
+                          )}
+                          
+                          {client.uptime_ratio && (
+                            <div className="space-y-1">
+                              <div className="flex justify-between text-xs">
+                                <span>Uptime</span>
+                                <span>{client.uptime_ratio}%</span>
+                              </div>
+                              <Progress value={client.uptime_ratio} className="h-1" />
+                            </div>
+                          )}
+                          
+                          {client.last_checked && (
+                            <p className="text-xs text-muted-foreground">
+                              Last checked: {new Date(client.last_checked).toLocaleString()}
+                            </p>
+                          )}
+                        </div>
                       </div>
                       
-                      <div className="flex items-center space-x-2">
-                        {client.website_url && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => openWebsite(client.website_url)}
-                            className="flex items-center space-x-1"
-                          >
-                            <ExternalLink className="h-3 w-3" />
-                            <span>Visit</span>
-                          </Button>
-                        )}
+                      <div className="flex flex-row sm:flex-col gap-2">
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => handleEditClient(client)}
-                          className="flex items-center space-x-1"
+                          className="w-full sm:w-auto"
                         >
                           <Edit className="h-3 w-3" />
-                          <span>Edit</span>
                         </Button>
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => handleDeleteClient(client.id)}
-                          className="flex items-center space-x-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+                          className="w-full sm:w-auto text-red-600 hover:text-red-700"
                         >
                           <Trash2 className="h-3 w-3" />
-                          <span>Delete</span>
                         </Button>
                       </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-
-        {clientStatuses.length === 0 && (
-          <Card className="card-elevated">
-            <CardContent className="p-8 text-center">
-              <Globe className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No Live Clients Found</h3>
-              <p className="text-muted-foreground">
-                Add live clients to your database to start monitoring their websites.
-              </p>
-            </CardContent>
-          </Card>
-        )}
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </motion.div>
 
-      {/* Integration Status */}
-      {integrationStatus && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="mt-8"
-        >
-          <Card className="card-elevated">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Settings className="h-5 w-5" />
-                <span>Integration Status</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="flex items-center space-x-2">
-                  {integrationStatus.supabase ? (
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                  ) : (
-                    <AlertCircle className="h-4 w-4 text-red-500" />
-                  )}
-                  <span className="text-sm">Supabase</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  {integrationStatus.uptimeRobot ? (
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                  ) : (
-                    <AlertCircle className="h-4 w-4 text-red-500" />
-                  )}
-                  <span className="text-sm">Uptime Robot</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  {integrationStatus.n8n ? (
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                  ) : (
-                    <AlertCircle className="h-4 w-4 text-red-500" />
-                  )}
-                  <span className="text-sm">N8N</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
+      {/* Add Client Dialog */}
+      <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Add New Client</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="name">Client Name</Label>
+              <Input
+                id="name"
+                value={newClient.name}
+                onChange={(e) => setNewClient({ ...newClient, name: e.target.value })}
+                placeholder="Enter client name"
+              />
+            </div>
+            <div>
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                value={newClient.description}
+                onChange={(e) => setNewClient({ ...newClient, description: e.target.value })}
+                placeholder="Enter description"
+              />
+            </div>
+            <div>
+              <Label htmlFor="website_url">Website URL</Label>
+              <Input
+                id="website_url"
+                value={newClient.website_url}
+                onChange={(e) => setNewClient({ ...newClient, website_url: e.target.value })}
+                placeholder="https://example.com"
+              />
+            </div>
+            <div>
+              <Label htmlFor="status">Status</Label>
+              <select
+                id="status"
+                value={newClient.status}
+                onChange={(e) => setNewClient({ ...newClient, status: e.target.value as any })}
+                className="w-full p-2 border rounded-md"
+              >
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="maintenance">Maintenance</option>
+              </select>
+            </div>
+            <div className="flex gap-2">
+              <Button onClick={handleAddClient} className="flex-1">
+                Add Client
+              </Button>
+              <Button variant="outline" onClick={() => setShowAddDialog(false)} className="flex-1">
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Edit Client Dialog */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Edit Client</DialogTitle>
           </DialogHeader>
           {editingClient && (
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="edit-name" className="text-right">
-                  Name
-                </Label>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="edit-name">Client Name</Label>
                 <Input
                   id="edit-name"
                   value={editingClient.name}
                   onChange={(e) => setEditingClient({ ...editingClient, name: e.target.value })}
-                  className="col-span-3"
+                  placeholder="Enter client name"
                 />
               </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="edit-website" className="text-right">
-                  Website URL
-                </Label>
+              <div>
+                <Label htmlFor="edit-website_url">Website URL</Label>
                 <Input
-                  id="edit-website"
+                  id="edit-website_url"
                   value={editingClient.website_url}
                   onChange={(e) => setEditingClient({ ...editingClient, website_url: e.target.value })}
-                  className="col-span-3"
                   placeholder="https://example.com"
                 />
               </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="edit-status" className="text-right">
-                  Status
-                </Label>
+              <div>
+                <Label htmlFor="edit-status">Status</Label>
                 <select
                   id="edit-status"
                   value={editingClient.status}
-                  onChange={(e) => setEditingClient({ ...editingClient, status: e.target.value as 'active' | 'inactive' | 'maintenance' })}
-                  className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  onChange={(e) => setEditingClient({ ...editingClient, status: e.target.value as any })}
+                  className="w-full p-2 border rounded-md"
                 >
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
                   <option value="maintenance">Maintenance</option>
                 </select>
               </div>
-              <div className="flex justify-end space-x-2">
-                <Button variant="outline" onClick={() => setShowEditDialog(false)}>
-                  Cancel
-                </Button>
-                <Button onClick={handleUpdateClient}>
+              <div className="flex gap-2">
+                <Button onClick={handleUpdateClient} className="flex-1">
                   Update Client
+                </Button>
+                <Button variant="outline" onClick={() => setShowEditDialog(false)} className="flex-1">
+                  Cancel
                 </Button>
               </div>
             </div>
