@@ -40,7 +40,7 @@ export const Logo: React.FC<LogoProps> = ({
   return (
     <div className={`flex items-center gap-2 sm:gap-3 ${className}`}>
       <img 
-        src="/logo.png" 
+        src="/logo-no-text.png" 
         alt="Code Brew Labs" 
         className={`${sizeClasses[size]} object-contain drop-shadow-sm rounded-lg`}
         draggable={false}
