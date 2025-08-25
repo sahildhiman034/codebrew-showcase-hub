@@ -117,7 +117,7 @@ export default function Auth() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-center mb-8"
         >
-          <Logo className="w-24 h-24 mx-auto mb-6 rounded-2xl overflow-hidden shadow-lg" />
+          <Logo size="lg" className="mx-auto mb-6" />
           <h1 className="text-3xl font-bold gradient-text mb-2">Code Brew Labs</h1>
           <p className="text-muted-foreground">Professional Portfolio & Client Management</p>
         </motion.div>

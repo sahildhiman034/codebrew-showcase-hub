@@ -38,15 +38,17 @@ export const Logo: React.FC<LogoProps> = ({
   }
 
   return (
-    <div className={`flex items-center gap-2 sm:gap-3 ${className}`}>
-      <img 
-        src="/logo.png" 
-        alt="Code Brew Labs" 
-        className={`${sizeClasses[size]} object-contain drop-shadow-sm rounded-lg`}
-        draggable={false}
-      />
+    <div className={`flex items-center justify-center gap-2 sm:gap-3 ${className}`}>
+      <div className="flex items-center justify-center">
+        <img 
+          src="/logo.png" 
+          alt="Code Brew Labs" 
+          className={`${sizeClasses[size]} object-contain drop-shadow-sm rounded-lg bg-white p-1`}
+          draggable={false}
+        />
+      </div>
       {showText && (
-        <div className="flex flex-col">
+        <div className="flex flex-col items-start justify-center">
           <span className={`font-bold ${textSizeClasses[size]} ${textClasses[variant]} ${
             mobileCompact ? 'hidden sm:block' : ''
           }`}>

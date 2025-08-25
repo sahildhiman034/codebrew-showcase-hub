@@ -1,20 +1,25 @@
 import React from "react"
 import { useNavigate, useLocation } from "react-router-dom"
-import { BarChart3, Settings } from "lucide-react"
+import { BarChart3, Settings, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/contexts/AuthContext"
 
 export const AdminFooter: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { isAdmin, customUser } = useAuth()
+  const { signOut, isAdmin, customUser } = useAuth()
+
+  const handleLogout = async () => {
+    await signOut()
+    navigate('/')
+  }
 
   const isActive = (path: string) => location.pathname === path
 
   return (
     <div className="bg-white border-t border-gray-200 px-6 py-4">
-      <div className="flex items-center justify-center">
-        {/* Status and Admin Panel */}
+      <div className="flex items-center justify-between">
+        {/* Left side - Status and Admin Panel */}
         <div className="flex items-center gap-4">
           {/* Status Button */}
           <Button
@@ -48,6 +53,17 @@ export const AdminFooter: React.FC = () => {
             </Button>
           )}
         </div>
+
+        {/* Right side - Logout Button */}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleLogout}
+          className="flex items-center gap-2 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+        >
+          <LogOut className="h-4 w-4" />
+          Log Out
+        </Button>
       </div>
     </div>
   )

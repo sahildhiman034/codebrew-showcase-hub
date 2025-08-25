@@ -134,7 +134,9 @@ export default function AppSidebar({ isCollapsed = false, onClose, isMobile = fa
       <div className={`border-b border-gray-600 flex justify-between items-center transition-all duration-300 ${
         isMobile ? 'p-4' : isCollapsed ? 'p-2' : 'p-4'
       }`}>
-        <Logo size={isCollapsed && !isMobile ? "sm" : "lg"} showText={false} />
+        <div className="flex items-center justify-center flex-1">
+          <Logo size={isCollapsed && !isMobile ? "sm" : "lg"} showText={false} />
+        </div>
         {isMobile && onClose && (
           <Button
             variant="ghost"
