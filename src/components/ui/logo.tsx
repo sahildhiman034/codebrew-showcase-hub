@@ -1,7 +1,7 @@
 import React from "react"
 
 interface LogoProps {
-  size?: "xs" | "sm" | "md" | "lg" | "xl"
+  size?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl"
   className?: string
   showText?: boolean
   variant?: "default" | "white" | "dark"
@@ -20,7 +20,9 @@ export const Logo: React.FC<LogoProps> = ({
     sm: "w-8 h-8 sm:w-12 sm:h-12",
     md: "w-10 h-10 sm:w-16 sm:h-16", 
     lg: "w-12 h-12 sm:w-20 sm:h-20",
-    xl: "w-16 h-16 sm:w-24 sm:h-24"
+    xl: "w-16 h-16 sm:w-24 sm:h-24",
+    "2xl": "w-20 h-20 sm:w-32 sm:h-32",
+    "3xl": "w-24 h-24 sm:w-40 sm:h-40"
   }
 
   const textClasses = {

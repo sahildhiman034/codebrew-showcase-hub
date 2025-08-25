@@ -118,7 +118,7 @@ export default function Auth() {
           className="flex flex-col items-center justify-center text-center mb-8"
         >
           <div className="flex items-center justify-center mb-6">
-            <Logo size="xl" className="mx-auto" />
+            <Logo size="3xl" className="mx-auto" />
           </div>
           <h1 className="text-3xl font-bold gradient-text mb-2">Code Brew Labs</h1>
           <p className="text-muted-foreground">Professional Portfolio & Client Management</p>
