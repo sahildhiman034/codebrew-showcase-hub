@@ -100,80 +100,82 @@ export default function Auth() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-surface to-surface-muted flex items-center justify-center p-4">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Professional Background Pattern */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),transparent_50%)]"></div>
+      <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(45deg,transparent_25%,rgba(120,119,198,0.05)_25%,rgba(120,119,198,0.05)_50%,transparent_50%,transparent_75%,rgba(120,119,198,0.05)_75%)] bg-[length:20px_20px]"></div>
       
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="w-full max-w-md relative z-10 flex flex-col items-center"
+        className="w-full max-w-lg relative z-10 flex flex-col items-center"
       >
         {/* Logo & Brand */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="flex flex-col items-center justify-center text-center mb-8"
+          className="flex flex-col items-center justify-center text-center mb-10"
         >
-          <div className="flex items-center justify-center mb-6">
+          <div className="flex items-center justify-center mb-8">
             <Logo size="3xl" className="mx-auto" />
           </div>
-          <h1 className="text-3xl font-bold gradient-text mb-2">Code Brew Labs</h1>
-          <p className="text-muted-foreground">Professional Portfolio & Client Management</p>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-3">Code Brew Labs</h1>
+          <p className="text-gray-600 text-lg font-medium">Professional Portfolio & Client Management</p>
         </motion.div>
 
         {/* Auth Card */}
-        <Card className="card-elevated">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold">
+        <Card className="w-full shadow-2xl border-0 bg-white/95 backdrop-blur-sm rounded-2xl overflow-hidden">
+          <div className="bg-gradient-to-r from-green-500 to-emerald-500 h-2"></div>
+          <CardHeader className="text-center pb-8 pt-8">
+            <CardTitle className="text-3xl font-bold text-gray-900 mb-2">
               {isLogin ? "Welcome Back" : "Create Account"}
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-gray-600 text-lg">
               {isLogin 
-                ? "Sign in to access your dashboard" 
-                : "Join Code Brew Labs platform"
+                ? "Sign in to access your professional dashboard" 
+                : "Join the Code Brew Labs platform"
               }
             </CardDescription>
           </CardHeader>
 
-          <CardContent>
+          <CardContent className="px-8 pb-8">
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium">
+              <div className="space-y-3">
+                <Label htmlFor="email" className="text-sm font-semibold text-gray-700">
                   Email Address
                 </Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="your@email.com"
+                  placeholder="Enter your email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="h-12"
+                  className="h-14 text-base border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 rounded-xl transition-all duration-200"
                   required
                 />
               </div>
 
               {!isLogin && (
-                <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-sm font-medium">
+                <div className="space-y-3">
+                  <Label htmlFor="phone" className="text-sm font-semibold text-gray-700">
                     Phone Number
                   </Label>
                   <Input
                     id="phone"
                     type="tel"
-                    placeholder="+1234567890"
+                    placeholder="Enter your phone number"
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
-                    className="h-12"
+                    className="h-14 text-base border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 rounded-xl transition-all duration-200"
                     required={!isLogin}
                   />
                 </div>
               )}
 
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium">
+              <div className="space-y-3">
+                <Label htmlFor="password" className="text-sm font-semibold text-gray-700">
                   Password
                 </Label>
                 <div className="relative">
@@ -183,20 +185,20 @@ export default function Auth() {
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="h-12 pr-12"
+                    className="h-14 text-base border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 rounded-xl transition-all duration-200 pr-12"
                     required
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 top-0 h-12 px-3 hover:bg-transparent"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-10 w-10 hover:bg-gray-100 rounded-lg"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-muted-foreground" />
+                      <EyeOff className="h-5 w-5 text-gray-500" />
                     ) : (
-                      <Eye className="h-4 w-4 text-muted-foreground" />
+                      <Eye className="h-5 w-5 text-gray-500" />
                     )}
                   </Button>
                 </div>
@@ -204,115 +206,59 @@ export default function Auth() {
 
               <Button
                 type="submit"
-                className="w-full h-12 btn-primary text-lg font-semibold"
+                className="w-full h-14 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02] mt-8"
                 disabled={loading}
               >
-                {loading ? "Processing..." : (isLogin ? "Sign In" : "Create Account")}
+                {loading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Processing...
+                  </div>
+                ) : (
+                  isLogin ? "Sign In" : "Create Account"
+                )}
               </Button>
             </form>
 
-            {/* Email Verification Section */}
-            {showEmailVerification && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg"
-              >
-                <div className="flex items-center gap-2 mb-3">
-                  <Mail className="h-4 w-4 text-blue-600" />
-                  <Label className="text-sm font-medium text-blue-900">Email Verification</Label>
-                </div>
-                <div className="space-y-3">
-                  <Input
-                    type="text"
-                    placeholder="Enter verification token"
-                    value={emailVerificationToken}
-                    onChange={(e) => setEmailVerificationToken(e.target.value)}
-                    className="h-10"
-                  />
-                  <Button
-                    onClick={handleEmailVerification}
-                    disabled={verifyingEmail || !emailVerificationToken.trim()}
-                    className="w-full h-10 bg-blue-600 hover:bg-blue-700 text-white"
-                  >
-                    {verifyingEmail ? "Verifying..." : "Verify Email"}
-                  </Button>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Phone Verification Section */}
-            {showPhoneVerification && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg"
-              >
-                <div className="flex items-center gap-2 mb-3">
-                  <Phone className="h-4 w-4 text-green-600" />
-                  <Label className="text-sm font-medium text-green-900">Phone Verification</Label>
-                </div>
-                <div className="space-y-3">
-                  <div className="flex gap-2">
-                    <Input
-                      type="text"
-                      placeholder="Enter OTP"
-                      value={phoneOTP}
-                      onChange={(e) => setPhoneOTP(e.target.value)}
-                      className="h-10 flex-1"
-                      maxLength={6}
-                    />
-                    <Button
-                      onClick={handleSendOTP}
-                      disabled={sendingOTP || !phoneNumber.trim()}
-                      variant="outline"
-                      className="h-10 px-3"
-                    >
-                      {sendingOTP ? "Sending..." : "Send OTP"}
-                    </Button>
-                  </div>
-                  <Button
-                    onClick={handlePhoneVerification}
-                    disabled={verifyingPhone || !phoneOTP.trim()}
-                    className="w-full h-10 bg-green-600 hover:bg-green-700 text-white"
-                  >
-                    {verifyingPhone ? "Verifying..." : "Verify Phone"}
-                  </Button>
-                </div>
-              </motion.div>
-            )}
-
             <div className="mt-6 text-center">
-              <p className="text-sm text-muted-foreground">
+              <p className="text-gray-600">
                 {isLogin ? "Don't have an account?" : "Already have an account?"}
+                <button
+                  type="button"
+                  onClick={() => setIsLogin(!isLogin)}
+                  className="ml-2 text-green-600 hover:text-green-700 font-semibold transition-colors duration-200"
+                >
+                  {isLogin ? "Create one now" : "Sign in here"}
+                </button>
               </p>
-              <Button
-                variant="link"
-                onClick={() => setIsLogin(!isLogin)}
-                className="text-primary hover:text-primary-hover font-semibold p-0 h-auto"
-              >
-                {isLogin ? "Create one now" : "Sign in instead"}
-              </Button>
             </div>
           </CardContent>
         </Card>
 
         {/* Demo Credentials */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="mt-6 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mt-8 w-full max-w-md"
         >
-          <Card className="bg-primary/5 border-primary/20">
-            <CardContent className="pt-4">
-              <p className="text-sm text-muted-foreground mb-2">Demo Credentials:</p>
-              <p className="text-sm font-mono bg-surface px-2 py-1 rounded">
-                sahilcodebrew77@gmail.com
-              </p>
-              <p className="text-sm font-mono bg-surface px-2 py-1 rounded mt-1">
-                Qwerty#125656
-              </p>
+          <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 shadow-lg">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-semibold text-green-800">Demo Credentials</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div>
+                <Label className="text-sm font-medium text-green-700">Email</Label>
+                <div className="mt-1 p-3 bg-white border border-green-200 rounded-lg text-sm font-mono text-gray-700">
+                  sahilcodebrew77@gmail.com
+                </div>
+              </div>
+              <div>
+                <Label className="text-sm font-medium text-green-700">Password</Label>
+                <div className="mt-1 p-3 bg-white border border-green-200 rounded-lg text-sm font-mono text-gray-700">
+                  Qwerty#125656
+                </div>
+              </div>
             </CardContent>
           </Card>
         </motion.div>
