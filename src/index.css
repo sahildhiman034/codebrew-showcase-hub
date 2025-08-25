@@ -1,0 +1,678 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Code Brew Labs Professional Design System - Corporate Tech Theme */
+
+@layer base {
+  :root {
+    /* Dashboard Light Theme */
+    --background: 0 0% 100%;          /* Pure White */
+    --foreground: 0 0% 0%;            /* Pure Black */
+    --surface: 0 0% 98%;              /* Very Light Gray */
+    --surface-muted: 0 0% 96%;        /* Light Gray */
+
+    /* Card System */
+    --card: 0 0% 100%;                /* White Cards */
+    --card-foreground: 0 0% 0%;       /* Black Text */
+    --card-hover: 0 0% 98%;           /* Light Gray Hover */
+
+    /* Popover System */
+    --popover: 0 0% 100%;             /* White Popovers */
+    --popover-foreground: 0 0% 0%;    /* Black Text */
+
+    /* Green Color Scale - Low to High Intensity */
+    --green-50: 142 76% 95%;          /* Very Light Green */
+    --green-100: 142 76% 90%;         /* Light Green */
+    --green-200: 142 76% 85%;         /* Medium Light Green */
+    --green-300: 142 76% 80%;         /* Medium Green */
+    --green-400: 142 76% 75%;         /* Base Lime Green */
+    --green-500: 142 76% 70%;         /* Main Lime Green #CBF57D */
+    --green-600: 142 76% 65%;         /* Darker Green */
+    --green-700: 142 76% 60%;         /* Dark Green */
+    --green-800: 142 76% 55%;         /* Very Dark Green */
+    --green-900: 142 76% 50%;         /* Darkest Green */
+
+    /* Code Brew Labs Brand Colors - Green Scale */
+    --primary: 142 76% 70%;           /* Green-500 - Main Lime Green #CBF57D */
+    --primary-foreground: 0 0% 0%;    /* Black Text on Lime Green */
+    --primary-hover: 142 76% 65%;     /* Green-600 - Darker */
+    --primary-muted: 142 76% 90%;     /* Green-100 - Light */
+    
+    --secondary: 0 0% 10%;            /* Dark Gray */
+    --secondary-foreground: 0 0% 100%; /* White Text */
+    --secondary-hover: 0 0% 15%;
+    
+    /* Accent Colors */
+    --accent: 142 76% 75%;            /* Green-400 - Light Lime Green */
+    --accent-foreground: 0 0% 0%;     /* Black Text */
+    --accent-hover: 142 76% 70%;      /* Green-500 - Main */
+    
+    --warning: 38 92% 50%;            /* Professional Orange */
+    --warning-foreground: 0 0% 0%;    /* Black Text */
+    
+    --destructive: 0 84% 60%;         /* Professional Red */
+    --destructive-foreground: 0 0% 100%; /* White Text */
+
+    /* Neutral Palette */
+    --muted: 0 0% 96%;                /* Light Gray */
+    --muted-foreground: 0 0% 45%;     /* Medium Gray Text */
+    --muted-darker: 0 0% 35%;         /* Darker Gray */
+
+    /* Interactive Elements */
+    --border: 0 0% 90%;               /* Light Gray Border */
+    --input: 0 0% 100%;               /* White Input */
+    --ring: 142 76% 70%;              /* Green-500 - Lime Green Ring */
+
+    /* Green Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(142 76% 70%), hsl(142 76% 65%));
+    --gradient-hero: linear-gradient(135deg, hsl(142 76% 70%), hsl(142 76% 75%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(142 76% 95%));
+    --gradient-dark: linear-gradient(135deg, hsl(142 76% 50%), hsl(142 76% 55%));
+    --gradient-light: linear-gradient(135deg, hsl(142 76% 90%), hsl(142 76% 85%));
+
+    /* Professional Shadows */
+    --shadow-sm: 0 2px 4px hsl(142 76% 70% / 0.1);
+    --shadow-md: 0 4px 12px hsl(142 76% 70% / 0.15);
+    --shadow-lg: 0 8px 25px hsl(142 76% 70% / 0.2);
+    --shadow-card: 0 2px 8px hsl(0 0% 0% / 0.05);
+    --shadow-hover: 0 8px 25px hsl(142 76% 70% / 0.25);
+
+    /* Spacing & Layout */
+    --radius: 0.75rem;
+    --radius-sm: 0.5rem;
+    --radius-lg: 1rem;
+
+    /* Sidebar Professional Theme */
+    --sidebar-background: 215 25% 27%;
+    --sidebar-foreground: 210 40% 95%;
+    --sidebar-primary: 142 76% 70%;   /* Green-500 */
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 215 25% 32%;
+    --sidebar-accent-foreground: 210 40% 95%;
+    --sidebar-border: 215 25% 35%;
+    --sidebar-ring: 142 76% 70%;      /* Green-500 */
+
+    /* Animation Timing */
+    --transition-fast: 0.15s ease-out;
+    --transition-normal: 0.3s ease-out;
+    --transition-slow: 0.5s ease-out;
+  }
+
+  .dark {
+    /* Dark Mode - Inverted Light Theme */
+    --background: 0 0% 5%;            /* Very Dark */
+    --foreground: 0 0% 100%;          /* White Text */
+    --surface: 0 0% 8%;               /* Dark Surface */
+    --surface-muted: 0 0% 12%;        /* Darker Surface */
+
+    --card: 0 0% 8%;                  /* Dark Cards */
+    --card-foreground: 0 0% 100%;     /* White Text */
+    --card-hover: 0 0% 12%;           /* Darker Hover */
+
+    --popover: 0 0% 8%;               /* Dark Popovers */
+    --popover-foreground: 0 0% 100%;  /* White Text */
+
+    /* Green Color Scale - Dark Mode */
+    --green-50: 142 76% 25%;          /* Very Dark Green */
+    --green-100: 142 76% 30%;         /* Dark Green */
+    --green-200: 142 76% 35%;         /* Medium Dark Green */
+    --green-300: 142 76% 40%;         /* Medium Green */
+    --green-400: 142 76% 45%;         /* Base Green */
+    --green-500: 142 76% 50%;         /* Main Green */
+    --green-600: 142 76% 55%;         /* Light Green */
+    --green-700: 142 76% 60%;         /* Lighter Green */
+    --green-800: 142 76% 65%;         /* Very Light Green */
+    --green-900: 142 76% 70%;         /* Lightest Green */
+
+    --primary: 142 76% 50%;           /* Green-500 - Main Green */
+    --primary-foreground: 0 0% 0%;    /* Black Text on Green */
+    --primary-hover: 142 76% 55%;     /* Green-600 - Lighter */
+    --primary-muted: 142 76% 25%;     /* Green-50 - Dark */
+
+    --secondary: 0 0% 90%;            /* Light Gray */
+    --secondary-foreground: 0 0% 0%;  /* Black Text */
+    --secondary-hover: 0 0% 85%;
+
+    --accent: 142 76% 55%;            /* Green-600 - Light Green */
+    --accent-foreground: 0 0% 0%;     /* Black Text */
+    --accent-hover: 142 76% 60%;      /* Green-700 - Lighter */
+
+    --warning: 38 92% 55%;            /* Orange */
+    --warning-foreground: 0 0% 0%;    /* Black Text */
+
+    --destructive: 0 84% 65%;         /* Red */
+    --destructive-foreground: 0 0% 100%; /* White Text */
+
+    --muted: 0 0% 12%;                /* Dark Gray */
+    --muted-foreground: 0 0% 65%;     /* Light Gray Text */
+    --muted-darker: 0 0% 20%;         /* Darker Gray */
+
+    --border: 0 0% 15%;               /* Dark Border */
+    --input: 0 0% 8%;                 /* Dark Input */
+    --ring: 142 76% 50%;              /* Green-500 - Green Ring */
+
+    /* Green Gradients - Dark Mode */
+    --gradient-primary: linear-gradient(135deg, hsl(142 76% 50%), hsl(142 76% 55%));
+    --gradient-hero: linear-gradient(135deg, hsl(142 76% 50%), hsl(142 76% 60%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 8%), hsl(142 76% 25%));
+    --gradient-dark: linear-gradient(135deg, hsl(142 76% 25%), hsl(142 76% 30%));
+    --gradient-light: linear-gradient(135deg, hsl(142 76% 60%), hsl(142 76% 65%));
+
+    --shadow-sm: 0 2px 4px hsl(0 0% 0% / 0.3);
+    --shadow-md: 0 4px 12px hsl(0 0% 0% / 0.4);
+    --shadow-lg: 0 8px 25px hsl(0 0% 0% / 0.5);
+    --shadow-card: 0 2px 8px hsl(0 0% 0% / 0.3);
+    --shadow-hover: 0 8px 25px hsl(142 76% 50% / 0.3);
+
+    --sidebar-background: 0 0% 8%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 142 76% 50%;   /* Green-500 */
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 12%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 142 76% 50%;      /* Green-500 */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Improved scrolling behavior */
+  html, body {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
+  /* Custom scrollbar styling for better UX */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary) / 0.3);
+    border-radius: 4px;
+    transition: background 0.2s ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary) / 0.5);
+  }
+
+  /* Firefox scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--primary) / 0.3) hsl(var(--muted));
+  }
+}
+
+@layer components {
+  /* Professional Button Variants */
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary to-primary-hover text-primary-foreground shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.02];
+  }
+
+  .btn-hero {
+    @apply bg-gradient-to-r from-primary via-primary-hover to-accent text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] font-semibold;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary-hover shadow-sm hover:shadow-md transition-all duration-300;
+  }
+
+  .btn-ghost {
+    @apply hover:bg-surface text-foreground hover:shadow-sm transition-all duration-300;
+  }
+
+  /* Professional Card Variants */
+  .card-elevated {
+    @apply bg-card border border-border shadow-card hover:shadow-hover transition-all duration-300 hover:scale-[1.01];
+  }
+
+  .card-gradient {
+    @apply bg-gradient-to-br from-card to-surface border border-border shadow-card hover:shadow-hover transition-all duration-300;
+  }
+
+  .card-hero {
+    @apply bg-gradient-to-br from-primary/5 to-accent/5 border border-primary/20 shadow-lg backdrop-blur-sm;
+  }
+
+  /* Status Indicators */
+  .status-online {
+    @apply bg-accent text-accent-foreground;
+  }
+
+  .status-offline {
+    @apply bg-destructive text-destructive-foreground;
+  }
+
+  .status-warning {
+    @apply bg-warning text-warning-foreground;
+  }
+
+  /* Professional Animations */
+  .fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  .slide-in-right {
+    animation: slideInRight 0.4s ease-out;
+  }
+
+  .scale-in {
+    animation: scaleIn 0.3s ease-out;
+  }
+
+  /* Sidebar Animations */
+  .sidebar-item {
+    @apply transition-all duration-200 hover:bg-sidebar-accent hover:scale-[1.02] hover:translate-x-1;
+  }
+
+  /* Professional Gradients */
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
+  }
+
+  .gradient-border {
+    @apply border-2 border-transparent bg-gradient-to-r from-primary to-accent bg-clip-border;
+  }
+}
+
+@layer utilities {
+  /* Custom Animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+    }
+    50% {
+      box-shadow: 0 0 40px hsl(var(--primary) / 0.6);
+    }
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  /* Professional Scrollbar Styling */
+  .scrollbar-hide {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 2px;
+  }
+
+  /* Smooth scrolling for categories */
+  .categories-scroll {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--primary) / 0.2) transparent;
+  }
+  
+  .categories-scroll::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  
+  .categories-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .categories-scroll::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary) / 0.2);
+    border-radius: 2px;
+  }
+
+  /* Green Color Scale Utilities */
+  .bg-green-50 { background-color: hsl(142 76% 95%); }
+  .bg-green-100 { background-color: hsl(142 76% 90%); }
+  .bg-green-200 { background-color: hsl(142 76% 85%); }
+  .bg-green-300 { background-color: hsl(142 76% 80%); }
+  .bg-green-400 { background-color: hsl(142 76% 75%); }
+  .bg-green-500 { background-color: hsl(142 76% 70%); }
+  .bg-green-600 { background-color: hsl(142 76% 65%); }
+  .bg-green-700 { background-color: hsl(142 76% 60%); }
+  .bg-green-800 { background-color: hsl(142 76% 55%); }
+  .bg-green-900 { background-color: hsl(142 76% 50%); }
+
+  .text-green-50 { color: hsl(142 76% 95%); }
+  .text-green-100 { color: hsl(142 76% 90%); }
+  .text-green-200 { color: hsl(142 76% 85%); }
+  .text-green-300 { color: hsl(142 76% 80%); }
+  .text-green-400 { color: hsl(142 76% 75%); }
+  .text-green-500 { color: hsl(142 76% 70%); }
+  .text-green-600 { color: hsl(142 76% 65%); }
+  .text-green-700 { color: hsl(142 76% 60%); }
+  .text-green-800 { color: hsl(142 76% 55%); }
+  .text-green-900 { color: hsl(142 76% 50%); }
+
+  .border-green-50 { border-color: hsl(142 76% 95%); }
+  .border-green-100 { border-color: hsl(142 76% 90%); }
+  .border-green-200 { border-color: hsl(142 76% 85%); }
+  .border-green-300 { border-color: hsl(142 76% 80%); }
+  .border-green-400 { border-color: hsl(142 76% 75%); }
+  .border-green-500 { border-color: hsl(142 76% 70%); }
+  .border-green-600 { border-color: hsl(142 76% 65%); }
+  .border-green-700 { border-color: hsl(142 76% 60%); }
+  .border-green-800 { border-color: hsl(142 76% 55%); }
+  .border-green-900 { border-color: hsl(142 76% 50%); }
+
+  /* Green Gradient Utilities */
+  .gradient-green-light {
+    background: linear-gradient(135deg, hsl(142 76% 95%), hsl(142 76% 90%));
+  }
+
+  .gradient-green-medium {
+    background: linear-gradient(135deg, hsl(142 76% 80%), hsl(142 76% 75%));
+  }
+
+  .gradient-green-main {
+    background: linear-gradient(135deg, hsl(142 76% 70%), hsl(142 76% 65%));
+  }
+
+  .gradient-green-dark {
+    background: linear-gradient(135deg, hsl(142 76% 60%), hsl(142 76% 55%));
+  }
+
+  .gradient-green-full {
+    background: linear-gradient(135deg, hsl(142 76% 95%), hsl(142 76% 50%));
+  }
+
+  /* Hover States */
+  .hover-green-50:hover { background-color: hsl(142 76% 95%); }
+  .hover-green-100:hover { background-color: hsl(142 76% 90%); }
+  .hover-green-200:hover { background-color: hsl(142 76% 85%); }
+  .hover-green-300:hover { background-color: hsl(142 76% 80%); }
+  .hover-green-400:hover { background-color: hsl(142 76% 75%); }
+  .hover-green-500:hover { background-color: hsl(142 76% 70%); }
+  .hover-green-600:hover { background-color: hsl(142 76% 65%); }
+  .hover-green-700:hover { background-color: hsl(142 76% 60%); }
+  .hover-green-800:hover { background-color: hsl(142 76% 55%); }
+  .hover-green-900:hover { background-color: hsl(142 76% 50%); }
+
+  /* Focus States */
+  .focus-green-50:focus { border-color: hsl(142 76% 95%); box-shadow: 0 0 0 2px hsl(142 76% 95% / 0.2); }
+  .focus-green-100:focus { border-color: hsl(142 76% 90%); box-shadow: 0 0 0 2px hsl(142 76% 90% / 0.2); }
+  .focus-green-200:focus { border-color: hsl(142 76% 85%); box-shadow: 0 0 0 2px hsl(142 76% 85% / 0.2); }
+  .focus-green-300:focus { border-color: hsl(142 76% 80%); box-shadow: 0 0 0 2px hsl(142 76% 80% / 0.2); }
+  .focus-green-400:focus { border-color: hsl(142 76% 75%); box-shadow: 0 0 0 2px hsl(142 76% 75% / 0.2); }
+  .focus-green-500:focus { border-color: hsl(142 76% 70%); box-shadow: 0 0 0 2px hsl(142 76% 70% / 0.2); }
+  .focus-green-600:focus { border-color: hsl(142 76% 65%); box-shadow: 0 0 0 2px hsl(142 76% 65% / 0.2); }
+  .focus-green-700:focus { border-color: hsl(142 76% 60%); box-shadow: 0 0 0 2px hsl(142 76% 60% / 0.2); }
+  .focus-green-800:focus { border-color: hsl(142 76% 55%); box-shadow: 0 0 0 2px hsl(142 76% 55% / 0.2); }
+  .focus-green-900:focus { border-color: hsl(142 76% 50%); box-shadow: 0 0 0 2px hsl(142 76% 50% / 0.2); }
+
+  /* Legacy Lime Green utilities (for backward compatibility) */
+  .bg-lime-green {
+    background-color: #CBF57D;
+  }
+
+  .text-lime-green {
+    color: #CBF57D;
+  }
+
+  .border-lime-green {
+    border-color: #CBF57D;
+  }
+
+  .gradient-lime-green {
+    background: linear-gradient(135deg, #CBF57D, #D1F585);
+  }
+
+  .hover-lime-green:hover {
+    background-color: #D1F585;
+  }
+
+  .focus-lime-green:focus {
+    border-color: #CBF57D;
+    box-shadow: 0 0 0 2px rgba(203, 245, 125, 0.2);
+  }
+}
+
+/* Responsive Layout Utilities */
+.container-responsive {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.text-responsive {
+  @apply text-sm sm:text-base lg:text-lg;
+}
+
+.heading-responsive {
+  @apply text-xl sm:text-2xl lg:text-3xl xl:text-4xl;
+}
+
+.spacing-responsive {
+  @apply space-y-4 sm:space-y-6 lg:space-y-8;
+}
+
+.grid-responsive {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6;
+}
+
+/* Touch-friendly mobile improvements */
+@media (max-width: 640px) {
+  .sidebar-item {
+    @apply min-h-[44px];
+  }
+  
+  .card-elevated {
+    @apply p-4;
+  }
+}
+
+/* Layout-specific utilities */
+.layout-dashboard {
+  @apply min-h-screen bg-background;
+}
+
+.layout-sidebar {
+  @apply bg-sidebar border-sidebar-border;
+}
+
+.layout-main {
+  @apply flex-1 flex flex-col;
+}
+
+.layout-header {
+  @apply h-16 bg-card border-b border-border shadow-sm;
+}
+
+.layout-content {
+  @apply flex-1 overflow-auto p-6;
+}
+
+/* Fix sidebar layout issues */
+.sidebar-fixed {
+  @apply flex-shrink-0 z-20;
+}
+
+.main-content-fixed {
+  @apply flex-1 min-w-0 overflow-hidden;
+}
+
+/* Ensure proper spacing */
+.content-wrapper {
+  @apply max-w-full overflow-x-hidden;
+}
+
+/* Prevent text overflow */
+.text-ellipsis {
+  @apply truncate;
+}
+
+/* Sidebar layout fixes */
+[data-sidebar="sidebar"] {
+  @apply bg-sidebar border-sidebar-border;
+}
+
+/* Ensure main content doesn't overlap with fixed sidebar */
+.peer[data-state="expanded"] ~ div {
+  @apply ml-0;
+}
+
+.peer[data-state="collapsed"] ~ div {
+  @apply ml-0;
+}
+
+/* Fix sidebar component layout */
+[data-sidebar="sidebar"] {
+  @apply bg-sidebar border-sidebar-border;
+}
+
+/* Ensure proper spacing for sidebar component */
+.group[data-state="expanded"] ~ div {
+  @apply ml-64;
+}
+
+.group[data-state="collapsed"] ~ div {
+  @apply ml-16;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .group[data-state="expanded"] ~ div,
+  .group[data-state="collapsed"] ~ div {
+    @apply ml-0;
+  }
+}
+
+/* Responsive layout fixes */
+@media (max-width: 768px) {
+  .sidebar-responsive {
+    @apply absolute left-0 top-0 h-full z-30;
+  }
+  
+  .main-responsive {
+    @apply w-full;
+  }
+}
+
+/* Custom scrollbar for sidebar categories */
+.sidebar-categories {
+  max-height: 600px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+/* Optional scrollbar styling */
+.sidebar-categories::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar-categories::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+.sidebar-categories::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Common style for all sidebar items */
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 45px;
+  padding: 0 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Active item (like Dashboard green color) */
+.sidebar-item.active {
+  background-color: #4ade80;
+  color: #fff;
+}
+
+/* Normal hover */
+.sidebar-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Fixed sidebar layout */
+.sidebar-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 50;
+}
+
+.main-content-with-sidebar {
+  margin-left: 16rem; /* 256px */
+}
+
+/* Gradient text for admin panel */
+.gradient-text {
+  background: linear-gradient(135deg, #6BC048 0%, #4ade80 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Gradient primary background */
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #6BC048 0%, #4ade80 100%);
+}
