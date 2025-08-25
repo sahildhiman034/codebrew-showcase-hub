@@ -64,7 +64,7 @@ VITE_APP_VERSION=1.0.0
 
 ## 🔗 **Your App URL**
 After deployment, your app will be available at:
-`https://codebrew-showcase-hub.vercel.app`
+`https://sahilcodebrew.vercel.app`
 
 ## ✅ **What to Test**
 - ✅ Live Client Status Monitor

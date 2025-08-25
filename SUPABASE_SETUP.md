@@ -16,16 +16,16 @@ Your authentication is trying to redirect to `localhost:59447` which causes the 
 
 #### **Site URL:**
 ```
-https://codebrew-showcase-hub.vercel.app
+https://sahilcodebrew.vercel.app
 ```
 
 #### **Redirect URLs:**
 Add these redirect URLs:
 ```
-https://codebrew-showcase-hub.vercel.app/auth/callback
-https://codebrew-showcase-hub.vercel.app/auth/confirm
-https://codebrew-showcase-hub.vercel.app/auth/reset-password
-https://codebrew-showcase-hub.vercel.app/auth/verify
+https://sahilcodebrew.vercel.app/auth/callback
+https://sahilcodebrew.vercel.app/auth/confirm
+https://sahilcodebrew.vercel.app/auth/reset-password
+https://sahilcodebrew.vercel.app/auth/verify
 ```
 
 #### **Remove Localhost URLs:**
