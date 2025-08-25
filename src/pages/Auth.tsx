@@ -108,16 +108,18 @@ export default function Auth() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="w-full max-w-md relative z-10"
+        className="w-full max-w-md relative z-10 flex flex-col items-center"
       >
         {/* Logo & Brand */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-center mb-8"
+          className="flex flex-col items-center justify-center text-center mb-8"
         >
-          <Logo size="lg" className="mx-auto mb-6" />
+          <div className="flex items-center justify-center mb-6">
+            <Logo size="xl" className="mx-auto" />
+          </div>
           <h1 className="text-3xl font-bold gradient-text mb-2">Code Brew Labs</h1>
           <p className="text-muted-foreground">Professional Portfolio & Client Management</p>
         </motion.div>
