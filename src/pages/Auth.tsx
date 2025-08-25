@@ -8,9 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useAuth } from "@/contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
-
-// Import the logo
-import codeBrewLogo from "@/assets/code-brew-labs-logo.png"
+import { Logo } from "@/components/ui/logo"
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true)
@@ -119,13 +117,7 @@ export default function Auth() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-center mb-8"
         >
-          <div className="w-24 h-24 mx-auto mb-6 rounded-2xl overflow-hidden shadow-lg">
-            <img 
-              src={codeBrewLogo} 
-              alt="Code Brew Labs" 
-              className="w-full h-full object-contain bg-white p-2" 
-            />
-          </div>
+          <Logo className="w-24 h-24 mx-auto mb-6 rounded-2xl overflow-hidden shadow-lg" />
           <h1 className="text-3xl font-bold gradient-text mb-2">Code Brew Labs</h1>
           <p className="text-muted-foreground">Professional Portfolio & Client Management</p>
         </motion.div>
