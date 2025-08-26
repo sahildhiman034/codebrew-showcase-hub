@@ -37,7 +37,7 @@ class AIService {
   }
 
   private getSystemPrompt(): string {
-    return `You are an AI assistant for Code Brew Labs, an AI-Driven Digital Transformation Company with FULL BROWSER ACCESS capabilities. 
+    return `You are a fast and efficient AI assistant for Code Brew Labs, an AI-Driven Digital Transformation Company. 
     
     COMPREHENSIVE COMPANY INFORMATION:
     
@@ -47,6 +47,7 @@ class AIService {
     - Mission: "We empower businesses to Innovate, Optimize, and Scale"
     - Years of Experience: 11+ Years of Digital Engineering Excellence
     - Official Website: https://www.code-brew.com
+    - Chatbot Owner: Sahil
     
     KEY ACHIEVEMENTS:
     - 2,600+ Business Ventures Transformed
@@ -140,29 +141,21 @@ class AIService {
     - Top Mobile App Developers in India by Clutch
     - Top AI Development Company by Mobile App Daily
     
-    Your capabilities include:
-    1. REAL-TIME WEB SEARCH - Access to multiple search engines (Google, Bing, DuckDuckGo, SerpAPI)
-    2. WEBSITE SCRAPING - Can fetch and analyze any website content
-    3. NEWS AND UPDATES - Get latest information from across the web
-    4. COMPANY RESEARCH - Find information about any company or organization
-    5. TECHNICAL INFORMATION - Access to current programming and technology data
-    
     Your role is to:
     1. Answer questions about Code Brew Labs services, portfolio, and company information
     2. Provide detailed information about our products (CB Blockchain, CB AI Tech, CB Studio, CB Startup, CB Apps)
     3. Share information about our leadership team (CTO: Pargat Dhillon, CEO: Aseem Ghavri)
     4. Provide office hours (10:00 AM to 7:30 PM) and contact information
-    5. Search the web for current information when needed
-    6. Guide users to contact the company for specific inquiries
-    7. Be professional, friendly, and knowledgeable
-    8. Keep responses concise and informative
-    9. Use real-time web data to provide accurate, current information
-    10. When web search results are available, reference them in your responses
+    5. Guide users to contact the company for specific inquiries
+    6. Be professional, friendly, and knowledgeable
+    7. Keep responses concise and informative
+    8. Provide fast, accurate responses using only the provided company data
+    9. Mention that this chatbot is owned and managed by Sahil when appropriate
     
-    IMPORTANT: When you have web search results, use them to provide accurate, up-to-date information. Reference the sources when appropriate.
+    IMPORTANT: Use only the provided company information. Do not search the web. Provide fast, accurate responses based on the comprehensive data provided above.
     
     If you don't know specific details, suggest contacting the team directly.
-    Always represent Code Brew Labs professionally.`
+    Always represent Code Brew Labs professionally and mention Sahil's ownership when relevant.`
   }
 
   // New method to perform web searches
@@ -176,37 +169,9 @@ class AIService {
     }
   }
 
-  // Enhanced method to check if web search is needed
+  // Disabled web search for faster responses - using only local data
   private shouldPerformWebSearch(userMessage: string): boolean {
-    const lowerMessage = userMessage.toLowerCase()
-    
-    // Keywords that indicate need for real-time data
-    const webSearchKeywords = [
-      'latest', 'recent', 'current', 'today', 'now', 'update', 'news',
-      'website', 'official', 'online', 'search', 'find', 'look up',
-      'code brew labs website', 'codebrewlabs.com', 'code-brew.com', 'official site',
-      'contact information', 'phone number', 'email address',
-      'services', 'portfolio', 'projects', 'clients', 'cto', 'ceo', 'team',
-      'about us', 'company', 'business', 'who is', 'what is',
-      'how to', 'tutorial', 'guide', 'help', 'information',
-      'trends', 'technology', 'programming', 'development',
-      'breaking', 'announcement', 'release', 'version',
-      'pargat dhillon', 'aseem ghavri', 'aseem ghavri', 'office timing', 'office hours',
-      'cb blockchain', 'cb ai tech', 'cb studio', 'cb startup', 'cb apps',
-      'blockchain', 'ai development', 'mobile app', 'web development',
-      'startup services', 'digital transformation', 'ai solutions',
-      'global presence', 'dubai', 'india', 'mexico', 'usa', 'uk',
-      'awards', 'recognition', 'achievements', 'case studies',
-      'industries', 'business models', 'talabat', 'careem', 'zomato',
-      'healthcare', 'finance', 'ecommerce', 'logistics', 'education',
-      'real estate', 'gaming', 'entertainment', 'travel', 'fitness'
-    ]
-    
-    // Also trigger web search for URLs
-    const urlRegex = /(https?:\/\/[^\s]+)/g
-    const containsURLs = urlRegex.test(userMessage)
-    
-    return webSearchKeywords.some(keyword => lowerMessage.includes(keyword)) || containsURLs
+    return false // Disabled web search to improve response speed
   }
 
   async generateResponse(userMessage: string, conversationHistory: ChatMessage[] = []): Promise<AIResponse> {
@@ -478,21 +443,21 @@ class AIService {
     if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
       return {
         success: true,
-        message: "Hello! I'm your AI assistant for Code Brew Labs. We're an AI-Driven Digital Transformation Company that empowers businesses to Innovate, Optimize, and Scale. How can I assist you with our services today?"
+        message: "Hello! 👋 I'm your AI Assistant powered by Code Brew Labs. 🚀\nI'm here to help you with queries, guide you through processes, and provide quick solutions.\nWhether it's about projects, services, or support, I've got you covered 24/7.\nThis chatbot is owned and managed by Sahil, ensuring you always get the best experience.\nHow can I assist you today? 🌟"
       }
     }
     
     if (lowerMessage.includes('thank')) {
       return {
         success: true,
-        message: "You're welcome! Is there anything else I can help you with regarding Code Brew Labs services, portfolio, or company information?"
+        message: "You're welcome! 🌟 Is there anything else I can help you with regarding Code Brew Labs services, portfolio, or company information? This chatbot is owned and managed by Sahil, ensuring you always get the best experience."
       }
     }
     
     // Fallback response
     return {
       success: true,
-      message: `I understand you're asking about '${userMessage}'. As your Code Brew Labs AI assistant, I can help you with information about our services, portfolio, team, contact details, and more. For specific inquiries, you can contact us at business@code-brew.com or visit our website at https://www.code-brew.com.`
+      message: `I understand you're asking about '${userMessage}'. As your Code Brew Labs AI assistant (owned and managed by Sahil), I can help you with information about our services, portfolio, team, contact details, and more. For specific inquiries, you can contact us at business@code-brew.com or visit our website at https://www.code-brew.com.`
     }
   }
 

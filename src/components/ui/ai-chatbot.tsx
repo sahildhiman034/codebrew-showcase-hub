@@ -39,7 +39,7 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hello! I'm your AI assistant for Code Brew Labs! 🚀 I'm an AI-Driven Digital Transformation Company assistant with FULL BROWSER ACCESS capabilities. I can search the web in real-time, access our official website (https://www.code-brew.com), and provide comprehensive information about our services, portfolio, team, and company details. How can I help you today?",
+      text: "Hello! 👋 I'm your AI Assistant powered by Code Brew Labs. 🚀\nI'm here to help you with queries, guide you through processes, and provide quick solutions.\nWhether it's about projects, services, or support, I've got you covered 24/7.\nThis chatbot is owned and managed by Sahil, ensuring you always get the best experience.\nHow can I assist you today? 🌟",
       sender: 'bot',
       timestamp: new Date()
     }
@@ -124,7 +124,7 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({
     setMessages([
       {
         id: '1',
-        text: "Hello! I'm your AI assistant with FULL BROWSER ACCESS capabilities! 🌐 I can search the web in real-time, scrape any website, find current information, and provide up-to-date data from multiple sources. I have access to Google, Bing, DuckDuckGo, and can analyze any website you mention. How can I help you today?",
+        text: "Hello! 👋 I'm your AI Assistant powered by Code Brew Labs. 🚀\nI'm here to help you with queries, guide you through processes, and provide quick solutions.\nWhether it's about projects, services, or support, I've got you covered 24/7.\nThis chatbot is owned and managed by Sahil, ensuring you always get the best experience.\nHow can I assist you today? 🌟",
         sender: 'bot',
         timestamp: new Date()
       }
