@@ -1,0 +1,5 @@
+[33m5e7169d[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Fix GitHub Pages deployment permissions and workflow configuration
+[33mfdc4ecc[m Merge AI chatbot feature
+[33m9da54db[m[33m ([m[1;31morigin/feature/ai-chatbot[m[33m, [m[1;32mfeature/ai-chatbot[m[33m)[m Add AI chatbot with OpenAI integration and improved UI (without API keys)
+[33ma57f3ff[m Add AI chatbot with OpenAI integration and improved UI
+[33mab52641[m Make login page professional with enhanced styling and restore previous card size

@@ -1,16 +1,28 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Send, X, MessageCircle, Bot, User, Settings, Key } from 'lucide-react'
+import { Send, X, MessageCircle, Bot, User, Settings, Key, Globe, ExternalLink } from 'lucide-react'
 import { Button } from './button'
 import { Input } from './input'
 import { Card, CardContent } from './card'
 import { aiService } from '@/lib/ai-service'
+
+interface WebSearchResult {
+  title: string
+  url: string
+  snippet: string
+  source: string
+  timestamp?: string
+  content?: string
+  images?: string[]
+  links?: string[]
+}
 
 interface Message {
   id: string
   text: string
   sender: 'user' | 'bot'
   timestamp: Date
+  webData?: WebSearchResult[]
 }
 
 interface AIChatbotProps {
@@ -27,7 +39,7 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hello! I'm your AI assistant. I can help you with questions about Code Brew Labs, our services, portfolio, or anything else. How can I help you today?",
+      text: "Hello! I'm your AI assistant for Code Brew Labs! 🚀 I'm an AI-Driven Digital Transformation Company assistant with FULL BROWSER ACCESS capabilities. I can search the web in real-time, access our official website (https://www.code-brew.com), and provide comprehensive information about our services, portfolio, team, and company details. How can I help you today?",
       sender: 'bot',
       timestamp: new Date()
     }
@@ -76,7 +88,8 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({
         id: (Date.now() + 1).toString(),
         text: aiResponse.message,
         sender: 'bot',
-        timestamp: new Date()
+        timestamp: new Date(),
+        webData: aiResponse.webData
       }
       
       setMessages(prev => [...prev, botMessage])
@@ -111,7 +124,7 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({
     setMessages([
       {
         id: '1',
-        text: "Hello! I'm your AI assistant. I can help you with questions about Code Brew Labs, our services, portfolio, or anything else. How can I help you today?",
+        text: "Hello! I'm your AI assistant with FULL BROWSER ACCESS capabilities! 🌐 I can search the web in real-time, scrape any website, find current information, and provide up-to-date data from multiple sources. I have access to Google, Bing, DuckDuckGo, and can analyze any website you mention. How can I help you today?",
         sender: 'bot',
         timestamp: new Date()
       }
@@ -195,7 +208,7 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({
                   <div>Temperature: {apiStatus.temperature}</div>
                   {!apiStatus.configured && (
                     <div className="text-yellow-600 text-xs">
-                      Add VITE_OPENAI_API_KEY to your environment variables for AI-powered responses.
+                      Add VITE_GEMINI_API_KEY to your environment variables for AI-powered responses.
                     </div>
                   )}
                 </div>
@@ -223,6 +236,81 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({
                         : 'bg-gray-100 text-gray-800'
                     }`}>
                       {message.text}
+                      
+                                             {/* Web Search Results */}
+                       {message.webData && message.webData.length > 0 && (
+                         <div className="mt-3 space-y-2">
+                           <div className="flex items-center gap-2 text-xs text-green-600 font-medium">
+                             <Globe className="w-3 h-3" />
+                             🌐 Real-time Web Data ({message.webData.length} sources)
+                           </div>
+                           {message.webData.map((result, index) => (
+                             <div key={index} className="bg-white border border-green-200 rounded-md p-2 text-xs">
+                               <div className="flex items-start justify-between gap-2">
+                                 <div className="flex-1">
+                                   <div className="font-medium text-gray-800 mb-1">{result.title}</div>
+                                   <div className="text-gray-600 text-xs mb-1">{result.snippet}</div>
+                                   <div className="flex items-center gap-2 text-green-600 text-xs">
+                                     <span>{result.source}</span>
+                                     {result.timestamp && (
+                                       <span>• {new Date(result.timestamp).toLocaleTimeString()}</span>
+                                     )}
+                                   </div>
+                                   
+                                   {/* Additional Links */}
+                                   {result.links && result.links.length > 0 && (
+                                     <div className="mt-2 pt-2 border-t border-green-100">
+                                       <div className="text-xs text-green-700 font-medium mb-1">Related Links:</div>
+                                       <div className="flex flex-wrap gap-1">
+                                         {result.links.slice(0, 3).map((link, linkIndex) => (
+                                           <a
+                                             key={linkIndex}
+                                             href={link}
+                                             target="_blank"
+                                             rel="noopener noreferrer"
+                                             className="text-xs text-green-600 hover:text-green-800 underline"
+                                           >
+                                             {new URL(link).hostname}
+                                           </a>
+                                         ))}
+                                       </div>
+                                     </div>
+                                   )}
+                                   
+                                   {/* Images */}
+                                   {result.images && result.images.length > 0 && (
+                                     <div className="mt-2 pt-2 border-t border-green-100">
+                                       <div className="text-xs text-green-700 font-medium mb-1">Images:</div>
+                                       <div className="flex gap-1">
+                                         {result.images.slice(0, 2).map((image, imgIndex) => (
+                                           <img
+                                             key={imgIndex}
+                                             src={image}
+                                             alt="Website content"
+                                             className="w-8 h-8 object-cover rounded border"
+                                             onError={(e) => {
+                                               e.currentTarget.style.display = 'none'
+                                             }}
+                                           />
+                                         ))}
+                                       </div>
+                                     </div>
+                                   )}
+                                 </div>
+                                 <a 
+                                   href={result.url} 
+                                   target="_blank" 
+                                   rel="noopener noreferrer"
+                                   className="text-green-500 hover:text-green-600 p-1"
+                                   title="Open in new tab"
+                                 >
+                                   <ExternalLink className="w-3 h-3" />
+                                 </a>
+                               </div>
+                             </div>
+                           ))}
+                         </div>
+                       )}
                     </div>
                   </div>
                 </motion.div>

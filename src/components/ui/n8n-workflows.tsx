@@ -166,8 +166,8 @@ export const N8NWorkflows: React.FC<N8NWorkflowsProps> = ({
 
     fetchWorkflows()
     
-    // Refresh every 60 seconds
-    const interval = setInterval(fetchWorkflows, 60000)
+    // Refresh every 5 minutes
+    const interval = setInterval(fetchWorkflows, 300000)
     return () => clearInterval(interval)
   }, [n8nUrl, apiKey])
 
@@ -191,7 +191,8 @@ export const N8NWorkflows: React.FC<N8NWorkflowsProps> = ({
         
         // Refresh workflows after execution
         setTimeout(() => {
-          window.location.reload()
+          fetchWorkflows()
+          setExecutingWorkflow(null)
         }, 2000)
       } else {
         // Mock execution

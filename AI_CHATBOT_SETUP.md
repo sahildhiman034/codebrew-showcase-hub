@@ -2,11 +2,11 @@
 
 ## 🤖 **AI-Powered Chatbot Configuration**
 
-Your Code Brew Labs application now includes an intelligent AI chatbot that can answer questions about your services, portfolio, and company information.
+Your Code Brew Labs application now includes an intelligent AI chatbot that can answer questions about your services, portfolio, and company information using Google's Gemini AI.
 
 ## 📋 **Features**
 
-- ✅ **AI-Powered Responses** - Uses OpenAI GPT for intelligent conversations
+- ✅ **AI-Powered Responses** - Uses Google Gemini for intelligent conversations
 - ✅ **Fallback Mode** - Works without API key using local responses
 - ✅ **Conversation History** - Maintains context across messages
 - ✅ **Professional Branding** - Matches your Code Brew Labs design
@@ -15,13 +15,12 @@ Your Code Brew Labs application now includes an intelligent AI chatbot that can 
 
 ## 🔑 **API Key Setup**
 
-### **Step 1: Get OpenAI API Key**
+### **Step 1: Get Gemini API Key**
 
-1. **Visit [OpenAI Platform](https://platform.openai.com/)**
-2. **Sign up or log in** to your account
-3. **Go to API Keys section**
-4. **Create a new API key**
-5. **Copy the API key** (starts with `sk-`)
+1. **Visit [Google AI Studio](https://makersuite.google.com/app/apikey)**
+2. **Sign in with your Google account**
+3. **Click "Create API Key"**
+4. **Copy the API key** (starts with `AIza`)
 
 ### **Step 2: Configure Environment Variables**
 
@@ -29,9 +28,9 @@ Your Code Brew Labs application now includes an intelligent AI chatbot that can 
 2. **Add the following variables:**
 
 ```env
-# AI Chatbot Configuration
-VITE_OPENAI_API_KEY=sk-your-actual-api-key-here
-VITE_AI_MODEL=gpt-3.5-turbo
+# AI Chatbot Configuration (Gemini API)
+VITE_GEMINI_API_KEY=AIza-your-actual-api-key-here
+VITE_AI_MODEL=gemini-1.5-flash
 VITE_AI_MAX_TOKENS=500
 VITE_AI_TEMPERATURE=0.7
 ```
@@ -45,9 +44,9 @@ npm run dev
 ## ⚙️ **Configuration Options**
 
 ### **AI Model Options:**
-- `gpt-3.5-turbo` - Fast, cost-effective (recommended)
-- `gpt-4` - More advanced, higher cost
-- `gpt-4-turbo` - Latest model, best performance
+- `gemini-1.5-flash` - Fast, cost-effective (recommended)
+- `gemini-1.5-pro` - More advanced, higher cost
+- `gemini-1.0-pro` - Legacy model, still effective
 
 ### **Response Settings:**
 - `VITE_AI_MAX_TOKENS` - Maximum response length (100-1000)
@@ -59,7 +58,7 @@ npm run dev
 ## 🎯 **How It Works**
 
 ### **With API Key (AI Powered):**
-- ✅ **Intelligent responses** using OpenAI GPT
+- ✅ **Intelligent responses** using Google Gemini
 - ✅ **Context awareness** from conversation history
 - ✅ **Professional tone** matching your brand
 - ✅ **Dynamic responses** based on user questions
@@ -72,15 +71,15 @@ npm run dev
 
 ## 💰 **Cost Considerations**
 
-### **OpenAI Pricing (as of 2024):**
-- **GPT-3.5-turbo**: ~$0.002 per 1K tokens
-- **GPT-4**: ~$0.03 per 1K tokens
+### **Gemini API Pricing (as of 2024):**
+- **Gemini 1.5 Flash**: ~$0.000075 per 1K input tokens, ~$0.0003 per 1K output tokens
+- **Gemini 1.5 Pro**: ~$0.00375 per 1K input tokens, ~$0.015 per 1K output tokens
 - **Typical conversation**: 50-200 tokens per response
 
 ### **Cost Example:**
 - 100 conversations per day
 - Average 150 tokens per response
-- Monthly cost: ~$9-15 with GPT-3.5-turbo
+- Monthly cost: ~$2-5 with Gemini 1.5 Flash (much cheaper than OpenAI)
 
 ## 🔧 **Customization**
 
@@ -111,7 +110,7 @@ The AI can handle questions about:
 ### **Security Notes:**
 - ✅ **API key is client-side** (Vite environment variables)
 - ✅ **No server-side storage** of API keys
-- ✅ **Rate limiting** handled by OpenAI
+- ✅ **Rate limiting** handled by Google AI
 - ✅ **Error handling** for API failures
 
 ## 🎨 **UI Features**
@@ -140,17 +139,17 @@ The AI can handle questions about:
 ### **Common Issues:**
 
 1. **"Not Configured" Status:**
-   - Check if `VITE_OPENAI_API_KEY` is set correctly
-   - Ensure the API key starts with `sk-`
+   - Check if `VITE_GEMINI_API_KEY` is set correctly
+   - Ensure the API key starts with `AIza`
    - Restart the development server
 
 2. **API Errors:**
-   - Verify your OpenAI account has credits
+   - Verify your Google AI Studio account has credits
    - Check API key permissions
    - Review console for specific error messages
 
 3. **Slow Responses:**
-   - Consider using `gpt-3.5-turbo` instead of `gpt-4`
+   - Consider using `gemini-1.5-flash` instead of `gemini-1.5-pro`
    - Reduce `VITE_AI_MAX_TOKENS` value
    - Check your internet connection
 
@@ -162,8 +161,8 @@ If the API is unavailable, the chatbot automatically switches to local mode with
 For technical support or customization requests:
 - **Email:** info@codebrewlabs.com
 - **Documentation:** Check the console for detailed error messages
-- **OpenAI Support:** Visit [OpenAI Help Center](https://help.openai.com/)
+- **Google AI Support:** Visit [Google AI Studio Help](https://ai.google.dev/docs)
 
 ---
 
-**Your AI chatbot is now ready to provide intelligent, professional responses to your visitors!** 🎉
+**Your AI chatbot is now ready to provide intelligent, professional responses to your visitors using Google's Gemini AI!** 🎉

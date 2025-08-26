@@ -91,11 +91,11 @@ export default function StatusMonitor() {
     loadMonitoringData()
     checkIntegrationStatus()
     
-    // Set up real-time refresh every 30 seconds
+    // Set up real-time refresh every 5 minutes
     const interval = setInterval(() => {
       loadMonitoringData()
       setLastUpdate(new Date())
-    }, 30000) // 30 seconds
+    }, 300000) // 5 minutes (300,000 milliseconds)
     
     return () => clearInterval(interval)
   }, [])
@@ -595,9 +595,9 @@ export default function StatusMonitor() {
               <Globe className="h-5 w-5 text-primary" />
               Client Websites Status
             </CardTitle>
-            <CardDescription>
-              Real-time status of all client websites • Auto-refresh every 30 seconds
-            </CardDescription>
+                         <CardDescription>
+               Real-time status of all client websites • Auto-refresh every 5 minutes
+             </CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (

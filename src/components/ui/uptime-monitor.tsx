@@ -115,8 +115,8 @@ export const UptimeMonitor: React.FC<UptimeMonitorProps> = ({
 
     fetchUptimeData()
     
-    // Refresh every 30 seconds
-    const interval = setInterval(fetchUptimeData, 30000)
+    // Refresh every 5 minutes
+    const interval = setInterval(fetchUptimeData, 300000)
     return () => clearInterval(interval)
   }, [apiKey])
 
