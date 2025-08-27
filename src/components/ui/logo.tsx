@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 
 interface LogoProps {
   size?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl"
@@ -8,13 +8,15 @@ interface LogoProps {
   mobileCompact?: boolean
 }
 
-export const Logo: React.FC<LogoProps> = ({ 
+export const Logo: React.FC<LogoProps> = ({
   size = "md", 
   className = "", 
   showText = false, // Changed default to false
   variant = "default",
   mobileCompact = false
 }) => {
+  const [imageError, setImageError] = useState(false)
+
   const sizeClasses = {
     xs: "w-6 h-6 sm:w-8 sm:h-8",
     sm: "w-8 h-8 sm:w-12 sm:h-12",
@@ -39,15 +41,41 @@ export const Logo: React.FC<LogoProps> = ({
     xl: "text-xl sm:text-2xl"
   }
 
+  const handleImageError = () => {
+    setImageError(true)
+  }
+
+  // Try multiple logo paths
+  const logoPaths = [
+    "/logo.png",
+    "/logo-no-text.png",
+    "/favicon.ico"
+  ]
+
   return (
     <div className={`flex items-center justify-center gap-2 sm:gap-3 ${className}`}>
       <div className="flex items-center justify-center">
-        <img 
-          src="/logo.png" 
-          alt="Code Brew Labs" 
-          className={`${sizeClasses[size]} object-contain drop-shadow-sm rounded-lg bg-white p-1`}
-          draggable={false}
-        />
+        {!imageError ? (
+          <img 
+            src={logoPaths[0]} 
+            alt="Code Brew Labs" 
+            className={`${sizeClasses[size]} object-contain drop-shadow-sm rounded-lg bg-white p-1`}
+            draggable={false}
+            onError={handleImageError}
+          />
+        ) : (
+          // Fallback: Try alternative logo path
+          <img 
+            src={logoPaths[1]} 
+            alt="Code Brew Labs" 
+            className={`${sizeClasses[size]} object-contain drop-shadow-sm rounded-lg bg-white p-1`}
+            draggable={false}
+            onError={() => {
+              // If both fail, show a text-based logo
+              setImageError(true)
+            }}
+          />
+        )}
       </div>
       {showText && (
         <div className="flex flex-col items-start justify-center">

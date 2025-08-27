@@ -11,6 +11,18 @@
   ],
   "routes": [
     {
+      "src": "/logo.png",
+      "dest": "/logo.png"
+    },
+    {
+      "src": "/logo-no-text.png",
+      "dest": "/logo-no-text.png"
+    },
+    {
+      "src": "/favicon.ico",
+      "dest": "/favicon.ico"
+    },
+    {
       "src": "/assets/(.*)",
       "dest": "/assets/$1"
     },
