@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Logo } from "@/components/ui/logo";
 import { AIChatbot } from "@/components/ui/ai-chatbot";
+import { StaticChatbot } from "@/components/ui/static-chatbot";
 import { CustomLoader } from "@/components/ui/custom-loader";
 import React from "react";
 
@@ -120,10 +121,17 @@ const App = () => {
           <TooltipProvider>
             <Toaster />
             <Sonner />
-            <AIChatbot 
-              position="bottom-right"
-              theme="light"
-            />
+            {process.env.NODE_ENV === 'development' ? (
+              <AIChatbot 
+                position="bottom-right"
+                theme="light"
+              />
+            ) : (
+              <StaticChatbot 
+                position="bottom-right"
+                theme="light"
+              />
+            )}
             <BrowserRouter>
               <Routes>
                 {/* Public Routes */}
