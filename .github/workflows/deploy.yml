@@ -29,7 +29,6 @@ jobs:
         VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}
     
     - name: Deploy to Vercel
-      uses: amondnet/vercel-action@v25
-      with:
-        vercel-token: ${{ secrets.VERCEL_TOKEN }}
-        vercel-args: '--prod'
+      run: |
+        npm install -g vercel@latest
+        vercel --prod --token ${{ secrets.VERCEL_TOKEN }} --yes
