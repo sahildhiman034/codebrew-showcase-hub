@@ -100,3 +100,65 @@ export interface User {
   created_at: string
   updated_at: string
 }
+
+// Chatbot Types
+export interface ChatbotSession {
+  id: string
+  visitor_id: string
+  session_start: string
+  session_end?: string
+  total_messages: number
+  visitor_info?: any
+  status: 'active' | 'ended' | 'archived'
+  created_at: string
+  updated_at: string
+}
+
+export interface ChatbotMessage {
+  id: string
+  session_id: string
+  visitor_id: string
+  message_type: 'text' | 'image' | 'file' | 'system'
+  sender_type: 'user' | 'bot' | 'admin'
+  content: string
+  metadata?: any
+  response_time_ms?: number
+  created_at: string
+}
+
+export interface ChatbotFAQ {
+  id: string
+  question: string
+  answer: string
+  category?: string
+  keywords?: string[]
+  priority: number
+  is_active: boolean
+  usage_count: number
+  created_by?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface ChatbotSetting {
+  id: string
+  setting_key: string
+  setting_value?: string
+  setting_type: 'string' | 'number' | 'boolean' | 'json'
+  description?: string
+  is_public: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface ChatbotAnalytics {
+  id: string
+  date: string
+  total_sessions: number
+  total_messages: number
+  unique_visitors: number
+  avg_response_time_ms: number
+  satisfaction_score?: number
+  most_common_questions?: any
+  created_at: string
+}

@@ -11,6 +11,9 @@ import { useNavigate } from "react-router-dom"
 import { Logo } from "@/components/ui/logo"
 
 export default function Auth() {
+  // All hooks must be called at the top level, before any conditional returns
+  const [error, setError] = useState<string | null>(null)
+  const [isLoaded, setIsLoaded] = useState(false)
   const [isLogin, setIsLogin] = useState(true)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -29,6 +32,35 @@ export default function Auth() {
   
   const { signIn, signUp, verifyEmail, verifyPhone, sendPhoneOTP } = useAuth()
   const navigate = useNavigate()
+
+  // Show loading state first
+  React.useEffect(() => {
+    const timer = setTimeout(() => setIsLoaded(true), 1000)
+    return () => clearTimeout(timer)
+  }, [])
+
+  // Early returns after all hooks are called
+  if (!isLoaded) {
+    return null;
+  }
+
+  // Catch any errors and show a simple message
+  if (error) {
+    return (
+      <div className="min-h-screen bg-red-50 flex items-center justify-center p-4">
+        <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">Error Loading</h1>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Reload Page
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

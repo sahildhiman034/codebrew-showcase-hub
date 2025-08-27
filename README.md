@@ -1,73 +1,301 @@
-# Welcome to your Lovable project
+# Code Brew Labs - AI Chatbot Showcase Hub
 
-## Project info
+A fully functional AI chatbot with real-time messaging, admin panel, and REST API for portfolio and client management.
 
-**URL**: https://lovable.dev/projects/1e7f8c9b-5512-4e96-807f-38e3b97cc766
+## 🚀 Features
 
-## How can I edit this code?
+- **AI-Powered Chatbot** with real-time messaging
+- **Admin Dashboard** with live analytics and session management
+- **REST API** for chatbot integration
+- **Real-time Updates** using Supabase subscriptions
+- **FAQ Management** system
+- **Analytics Dashboard** with charts and insights
+- **Multi-user Authentication** with role-based access
+- **Responsive Design** for all devices
 
-There are several ways of editing your application.
+## 🛠️ Tech Stack
 
-**Use Lovable**
+- **Frontend**: React + TypeScript + Vite
+- **Backend**: Supabase (PostgreSQL + Real-time)
+- **AI Service**: OpenAI GPT-4 / Google Gemini
+- **Styling**: Tailwind CSS + Shadcn/ui
+- **Deployment**: Vercel/Netlify
+- **Database**: PostgreSQL (Supabase)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/1e7f8c9b-5512-4e96-807f-38e3b97cc766) and start prompting.
+## 📋 Prerequisites
 
-Changes made via Lovable will be committed automatically to this repo.
+- Node.js 18+ 
+- Supabase account
+- OpenAI API key or Google Gemini API key
+- GitHub account
 
-**Use your preferred IDE**
+## 🚀 Quick Setup
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 1. Clone and Install
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+```bash
+git clone https://github.com/yourusername/codebrew-showcase-hub.git
+cd codebrew-showcase-hub
+npm install
+```
 
-Follow these steps:
+### 2. Environment Setup
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Create `.env` file:
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+```env
+# Supabase Configuration
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 
-# Step 3: Install the necessary dependencies.
-npm i
+# AI Service Configuration
+VITE_OPENAI_API_KEY=your_openai_api_key
+VITE_GEMINI_API_KEY=your_gemini_api_key
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Optional: Web Search API
+VITE_SERPER_API_KEY=your_serper_api_key
+```
+
+### 3. Database Setup
+
+Run the SQL script in your Supabase SQL Editor:
+
+```sql
+-- Copy and paste the contents of quick-chatbot-setup.sql
+```
+
+### 4. Start Development
+
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Visit `http://localhost:5173`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🔧 API Documentation
 
-**Use GitHub Codespaces**
+### Chatbot API Endpoints
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+#### 1. Send Message
+```http
+POST /api/chatbot/message
+Content-Type: application/json
 
-## What technologies are used for this project?
+{
+  "message": "Hello, how can you help me?",
+  "visitor_id": "optional_visitor_id"
+}
+```
 
-This project is built with:
+Response:
+```json
+{
+  "success": true,
+  "message": "Hello! I'm here to help you with any questions about our services...",
+  "session_id": "uuid",
+  "response_time": 1200
+}
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+#### 2. Get Chat History
+```http
+GET /api/chatbot/history?visitor_id=VIS_20241226_abc123&limit=50
+```
 
-## How can I deploy this project?
+#### 3. Create Session
+```http
+POST /api/chatbot/session
+Content-Type: application/json
 
-Simply open [Lovable](https://lovable.dev/projects/1e7f8c9b-5512-4e96-807f-38e3b97cc766) and click on Share -> Publish.
+{
+  "visitor_id": "VIS_20241226_abc123"
+}
+```
 
-## Can I connect a custom domain to my Lovable project?
+#### 4. Get FAQ
+```http
+GET /api/chatbot/faq?category=general
+```
 
-Yes, you can!
+### Admin API Endpoints
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+#### 1. Get All Sessions
+```http
+GET /api/admin/sessions?limit=100&status=active
+Authorization: Bearer your_admin_token
+```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+#### 2. Get Session Messages
+```http
+GET /api/admin/sessions/{session_id}/messages
+Authorization: Bearer your_admin_token
+```
+
+#### 3. Add FAQ Entry
+```http
+POST /api/admin/faq
+Authorization: Bearer your_admin_token
+Content-Type: application/json
+
+{
+  "question": "What services do you offer?",
+  "answer": "We offer web development, mobile apps, and consulting services.",
+  "category": "general",
+  "priority": 1
+}
+```
+
+## 🌐 Deployment
+
+### Deploy to Vercel
+
+1. **Push to GitHub**
+```bash
+git add .
+git commit -m "Initial commit"
+git push origin main
+```
+
+2. **Connect to Vercel**
+- Go to [vercel.com](https://vercel.com)
+- Import your GitHub repository
+- Add environment variables
+- Deploy
+
+### Deploy to Netlify
+
+1. **Build the project**
+```bash
+npm run build
+```
+
+2. **Deploy**
+- Go to [netlify.com](https://netlify.com)
+- Drag and drop the `dist` folder
+- Or connect your GitHub repository
+
+## 🔑 Environment Variables
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `VITE_SUPABASE_URL` | Supabase project URL | ✅ |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anonymous key | ✅ |
+| `VITE_OPENAI_API_KEY` | OpenAI API key | ✅ |
+| `VITE_GEMINI_API_KEY` | Google Gemini API key | ✅ |
+| `VITE_SERPER_API_KEY` | Serper API key for web search | ❌ |
+
+## 📊 Database Schema
+
+### Tables
+- `chatbot_sessions` - Chat sessions
+- `chatbot_messages` - Individual messages
+- `chatbot_faq` - FAQ entries
+- `chatbot_settings` - Bot configuration
+- `chatbot_analytics` - Analytics data
+
+## 🎯 Usage Examples
+
+### JavaScript/Node.js
+```javascript
+// Send a message
+const response = await fetch('/api/chatbot/message', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    message: 'What services do you offer?',
+    visitor_id: 'VIS_20241226_abc123'
+  })
+});
+
+const data = await response.json();
+console.log(data.message);
+```
+
+### Python
+```python
+import requests
+
+# Send a message
+response = requests.post('/api/chatbot/message', json={
+    'message': 'What services do you offer?',
+    'visitor_id': 'VIS_20241226_abc123'
+})
+
+data = response.json()
+print(data['message'])
+```
+
+### cURL
+```bash
+curl -X POST /api/chatbot/message \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Hello!", "visitor_id": "VIS_20241226_abc123"}'
+```
+
+## 🔒 Security
+
+- All API endpoints are protected with CORS
+- Admin endpoints require authentication
+- Rate limiting implemented
+- Input validation and sanitization
+- SQL injection protection via Supabase
+
+## 📈 Analytics
+
+The system tracks:
+- Total sessions and messages
+- Response times
+- User engagement
+- FAQ usage
+- Real-time statistics
+
+## 🛠️ Development
+
+### Available Scripts
+
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run preview      # Preview production build
+npm run lint         # Run ESLint
+npm run type-check   # Run TypeScript check
+```
+
+### Project Structure
+
+```
+src/
+├── components/      # React components
+├── pages/          # Page components
+├── lib/            # Services and utilities
+├── contexts/       # React contexts
+├── hooks/          # Custom hooks
+└── assets/         # Static assets
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## 📄 License
+
+MIT License - see LICENSE file for details
+
+## 🆘 Support
+
+- **Documentation**: [Wiki](https://github.com/yourusername/codebrew-showcase-hub/wiki)
+- **Issues**: [GitHub Issues](https://github.com/yourusername/codebrew-showcase-hub/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/yourusername/codebrew-showcase-hub/discussions)
+
+## 🎉 Demo Credentials
+
+- **Email**: sahilcodebrew77@gmail.com
+- **Password**: Qwerty#125656
+
+---
+
+Built with ❤️ by Code Brew Labs

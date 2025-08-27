@@ -10,7 +10,8 @@ import {
   Database,
   LogOut,
   Menu,
-  X
+  X,
+  MessageCircle
 } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -28,6 +29,7 @@ const adminTabs = [
   { id: "demos", label: "Demo Projects", icon: Monitor, path: "/admin/demos" },
   { id: "clients", label: "Live Clients", icon: Globe, path: "/admin/clients" },
   { id: "users", label: "Users", icon: Users, path: "/admin/users" },
+  { id: "chatbot", label: "Chatbot", icon: MessageCircle, path: "/admin/chatbot" },
 ]
 
 export const AdminNavigation: React.FC<AdminNavigationProps> = ({ children }) => {
@@ -120,7 +122,7 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({ children }) =>
 
           {/* Desktop Tabs */}
           <div className="hidden sm:block">
-            <TabsList className="grid w-full grid-cols-4 h-auto p-1 bg-muted">
+            <TabsList className="grid w-full grid-cols-5 h-auto p-1 bg-muted">
               {adminTabs.map((tab) => (
                 <TabsTrigger 
                   key={tab.id} 

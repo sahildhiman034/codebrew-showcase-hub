@@ -8,7 +8,8 @@ import {
   Monitor, 
   Globe,
   Database,
-  LogOut
+  LogOut,
+  MessageCircle
 } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -25,6 +26,7 @@ const adminTabs = [
   { id: "demos", label: "Demo Projects", icon: Monitor },
   { id: "clients", label: "Live Clients", icon: Globe },
   { id: "users", label: "Users", icon: Users },
+  { id: "chatbot", label: "Chatbot", icon: MessageCircle },
 ]
 
 export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
@@ -88,7 +90,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         transition={{ duration: 0.5, delay: 0.1 }}
       >
         <Tabs value={currentTab} onValueChange={handleTabChange} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 h-auto p-1 bg-muted">
+          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5 h-auto p-1 bg-muted">
             {adminTabs.map((tab) => (
               <TabsTrigger 
                 key={tab.id} 

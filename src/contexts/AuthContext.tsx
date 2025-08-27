@@ -121,10 +121,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }
 
   useEffect(() => {
-    // Create default admin user if needed
-    createDefaultAdmin()
-
-    // Get initial session
+    // Get initial session immediately
     const getSession = async () => {
       const { data: { session }, error } = await supabase.auth.getSession()
       if (error) {
@@ -132,11 +129,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       } else {
         setSession(session)
         setUser(session?.user ?? null)
+        
+        // Fetch custom user data if session exists
+        if (session?.user?.email) {
+          await fetchCurrentUser(session.user.email)
+        }
       }
       setLoading(false)
     }
 
     getSession()
+
+    // Create default admin user in background (non-blocking)
+    createDefaultAdmin()
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -145,12 +150,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUser(session?.user ?? null)
         setLoading(false)
 
-        if (event === 'SIGNED_IN') {
+        if (event === 'SIGNED_IN' && session?.user?.email) {
+          await fetchCurrentUser(session.user.email)
           toast({
             title: "Welcome back!",
             description: "You have successfully signed in.",
           })
         } else if (event === 'SIGNED_OUT') {
+          setCustomUser(null)
           toast({
             title: "Signed out",
             description: "You have been signed out successfully.",

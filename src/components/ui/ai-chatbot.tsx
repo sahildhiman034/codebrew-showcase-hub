@@ -5,6 +5,7 @@ import { Button } from './button'
 import { Input } from './input'
 import { Card, CardContent } from './card'
 import { aiService } from '@/lib/ai-service'
+import { chatbotService } from '@/lib/chatbot-service'
 
 interface WebSearchResult {
   title: string
@@ -36,14 +37,8 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [showConfig, setShowConfig] = useState(false)
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      text: "Hello! 👋 I'm your AI Assistant powered by Code Brew Labs. 🚀\nI'm here to help you with queries, guide you through processes, and provide quick solutions.\nWhether it's about projects, services, or support, I've got you covered 24/7.\nThis chatbot is owned and managed by Sahil, ensuring you always get the best experience.\nHow can I assist you today? 🌟",
-      sender: 'bot',
-      timestamp: new Date()
-    }
-  ])
+  const [messages, setMessages] = useState<Message[]>([])
+  const [visitorId, setVisitorId] = useState<string>('')
   const [inputValue, setInputValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [apiStatus, setApiStatus] = useState(aiService.getConfigurationStatus())
@@ -57,6 +52,55 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  // Initialize chatbot when component mounts
+  useEffect(() => {
+    const initializeChatbot = async () => {
+      try {
+        // Get visitor ID and initialize session
+        const id = chatbotService.getVisitorId()
+        setVisitorId(id)
+        
+        // Get chatbot status
+        const status = await chatbotService.getChatbotStatus()
+        if (status === 'inactive') {
+          return // Don't show chatbot if inactive
+        }
+        
+        // Get welcome message from settings
+        const settings = await chatbotService.getSettings()
+        const welcomeSetting = settings.find(s => s.setting_key === 'welcome_message')
+        const welcomeMessage = welcomeSetting?.setting_value || "Hello! 👋 I'm your AI Assistant powered by Code Brew Labs. 🚀\nI'm here to help you with queries, guide you through processes, and provide quick solutions.\nWhether it's about projects, services, or support, I've got you covered 24/7.\nThis chatbot is owned and managed by Sahil, ensuring you always get the best experience.\nHow can I assist you today? 🌟"
+        
+        // Add welcome message
+        setMessages([
+          {
+            id: '1',
+            text: welcomeMessage,
+            sender: 'bot',
+            timestamp: new Date()
+          }
+        ])
+        
+        // Store welcome message in database
+        await chatbotService.storeMessage(welcomeMessage, 'bot', 'system')
+        
+      } catch (error) {
+        console.error('Error initializing chatbot:', error)
+        // Fallback welcome message
+        setMessages([
+          {
+            id: '1',
+            text: "Hello! 👋 I'm your AI Assistant powered by Code Brew Labs. 🚀\nI'm here to help you with queries, guide you through processes, and provide quick solutions.\nWhether it's about projects, services, or support, I've got you covered 24/7.\nThis chatbot is owned and managed by Sahil, ensuring you always get the best experience.\nHow can I assist you today? 🌟",
+            sender: 'bot',
+            timestamp: new Date()
+          }
+        ])
+      }
+    }
+    
+    initializeChatbot()
+  }, [])
 
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isLoading) return
@@ -73,31 +117,18 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({
     setIsLoading(true)
 
     try {
-      // Convert messages to conversation history format for AI service
-      const conversationHistory = messages
-        .filter(msg => msg.sender === 'user' || msg.sender === 'bot')
-        .map(msg => ({
-          role: msg.sender === 'user' ? 'user' as const : 'assistant' as const,
-          content: msg.text
-        }))
-        .slice(-10) // Keep last 10 messages for context
-
-      const aiResponse = await aiService.generateResponse(userMessage.text, conversationHistory)
+      // Process message through chatbot service (this will store messages and generate response)
+      const response = await chatbotService.processMessage(userMessage.text)
       
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: aiResponse.message,
+        text: response.message,
         sender: 'bot',
         timestamp: new Date(),
-        webData: aiResponse.webData
+        webData: response.webData
       }
       
       setMessages(prev => [...prev, botMessage])
-      
-      // Log any API errors for debugging
-      if (!aiResponse.success && aiResponse.error) {
-        console.warn('AI Service Error:', aiResponse.error)
-      }
       
     } catch (error) {
       console.error('Chat Error:', error)
@@ -120,15 +151,43 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({
     }
   }
 
-  const clearChat = () => {
-    setMessages([
-      {
-        id: '1',
-        text: "Hello! 👋 I'm your AI Assistant powered by Code Brew Labs. 🚀\nI'm here to help you with queries, guide you through processes, and provide quick solutions.\nWhether it's about projects, services, or support, I've got you covered 24/7.\nThis chatbot is owned and managed by Sahil, ensuring you always get the best experience.\nHow can I assist you today? 🌟",
-        sender: 'bot',
-        timestamp: new Date()
-      }
-    ])
+  const clearChat = async () => {
+    try {
+      // Clear visitor data and start fresh
+      chatbotService.clearVisitorData()
+      
+      // Reinitialize chatbot
+      const id = chatbotService.getVisitorId()
+      setVisitorId(id)
+      
+      // Get welcome message from settings
+      const settings = await chatbotService.getSettings()
+      const welcomeSetting = settings.find(s => s.setting_key === 'welcome_message')
+      const welcomeMessage = welcomeSetting?.setting_value || "Hello! 👋 I'm your AI Assistant powered by Code Brew Labs. 🚀\nI'm here to help you with queries, guide you through processes, and provide quick solutions.\nWhether it's about projects, services, or support, I've got you covered 24/7.\nThis chatbot is owned and managed by Sahil, ensuring you always get the best experience.\nHow can I assist you today? 🌟"
+      
+      setMessages([
+        {
+          id: '1',
+          text: welcomeMessage,
+          sender: 'bot',
+          timestamp: new Date()
+        }
+      ])
+      
+      // Store welcome message in database
+      await chatbotService.storeMessage(welcomeMessage, 'bot', 'system')
+    } catch (error) {
+      console.error('Error clearing chat:', error)
+      // Fallback clear
+      setMessages([
+        {
+          id: '1',
+          text: "Hello! 👋 I'm your AI Assistant powered by Code Brew Labs. 🚀\nI'm here to help you with queries, guide you through processes, and provide quick solutions.\nWhether it's about projects, services, or support, I've got you covered 24/7.\nThis chatbot is owned and managed by Sahil, ensuring you always get the best experience.\nHow can I assist you today? 🌟",
+          sender: 'bot',
+          timestamp: new Date()
+        }
+      ])
+    }
   }
 
   return (
@@ -188,6 +247,13 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({
                   {apiStatus.configured ? 'AI Powered' : 'Local Mode'}
                 </span>
               </div>
+              
+              {/* Visitor ID */}
+              {visitorId && (
+                <div className="mt-1 flex items-center gap-2">
+                  <span className="text-xs text-green-100">ID: {visitorId}</span>
+                </div>
+              )}
             </div>
 
             {/* Configuration Panel */}
