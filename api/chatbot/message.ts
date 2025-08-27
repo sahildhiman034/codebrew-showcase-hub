@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next'
+import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL!
@@ -6,7 +6,16 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Enable CORS
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end()
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
   }
@@ -99,50 +108,43 @@ async function storeMessage(
   senderType: 'user' | 'bot' | 'admin'
 ): Promise<string> {
   const currentTime = new Date().toISOString()
-  
-  const { data, error } = await supabase
+  const { data: message, error } = await supabase
     .from('chatbot_messages')
     .insert({
       session_id: sessionId,
       visitor_id: visitorId,
-      message_type: 'text',
+      content: content,
       sender_type: senderType,
-      content,
       created_at: currentTime
     })
     .select('id')
     .single()
 
   if (error) throw error
-  return data.id
+  return message.id
 }
 
 async function generateAIResponse(userMessage: string): Promise<string> {
-  // Simple response logic - you can replace this with OpenAI/Gemini API
+  // Simple AI response logic - you can enhance this
   const responses = [
-    "Hello! I'm here to help you with any questions about our services. How can I assist you today?",
-    "Thank you for your message! I can help you with web development, mobile apps, and consulting services. What would you like to know?",
-    "Great question! We offer comprehensive development services including React, Node.js, Python, and cloud solutions. How can I help you?",
-    "I'd be happy to help! Our team specializes in modern web technologies and can assist with your project needs. What are you looking for?",
-    "Thanks for reaching out! I can provide information about our services, pricing, and project timelines. What would you like to learn more about?"
+    "Thank you for your message! I'm here to help you with any questions about our services.",
+    "I understand your inquiry. Let me assist you with that.",
+    "That's a great question! Here's what I can tell you about that.",
+    "I'm here to help! Could you please provide more details about your request?",
+    "Thank you for reaching out. I'll do my best to assist you."
   ]
   
   return responses[Math.floor(Math.random() * responses.length)]
 }
 
 async function updateSessionMessageCount(sessionId: string): Promise<void> {
-  const { data: messages } = await supabase
-    .from('chatbot_messages')
-    .select('id')
-    .eq('session_id', sessionId)
-
-  const messageCount = messages ? messages.length : 0
-
-  await supabase
+  const { error } = await supabase
     .from('chatbot_sessions')
     .update({ 
-      total_messages: messageCount,
+      total_messages: supabase.rpc('increment'),
       updated_at: new Date().toISOString()
     })
     .eq('id', sessionId)
+
+  if (error) throw error
 }
