@@ -121,17 +121,10 @@ const App = () => {
           <TooltipProvider>
             <Toaster />
             <Sonner />
-            {process.env.NODE_ENV === 'development' ? (
-              <AIChatbot 
-                position="bottom-right"
-                theme="light"
-              />
-            ) : (
-              <StaticChatbot 
-                position="bottom-right"
-                theme="light"
-              />
-            )}
+            <AIChatbot 
+              position="bottom-right"
+              theme="light"
+            />
             <BrowserRouter>
               <Routes>
                 {/* Public Routes */}

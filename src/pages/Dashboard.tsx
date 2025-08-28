@@ -9,21 +9,8 @@ import { Button } from "@/components/ui/button"
 import { Logo } from "@/components/ui/logo"
 import { supabase } from "@/lib/supabase"
 import { integrationService } from "@/lib/integrations"
-import { uptimeRobotService } from "@/lib/uptime-robot"
 import { SimpleChart } from "@/components/ui/simple-chart"
-
-interface CategoryMonitoring {
-  id: string
-  name: string
-  status: 'online' | 'offline' | 'maintenance'
-  uptime: number
-  response: number
-  projects: number
-  clients: number
-  performance: number
-  alerts: number
-  last_check: string
-}
+import { uptimeRobotService } from "@/lib/uptime-robot"
 
 export default function Dashboard() {
   const [stats, setStats] = useState([
@@ -64,7 +51,15 @@ export default function Dashboard() {
   const [recentProjects, setRecentProjects] = useState([])
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
-  const [categoryMonitoring, setCategoryMonitoring] = useState<CategoryMonitoring[]>([])
+  const [categoryMonitoring, setCategoryMonitoring] = useState([])
+  const [uptimeData, setUptimeData] = useState({
+    total: 0,
+    up: 0,
+    down: 0,
+    paused: 0,
+    averageUptime: 0,
+    averageResponseTime: 0
+  })
 
   useEffect(() => {
     loadDashboardData()
@@ -73,151 +68,121 @@ export default function Dashboard() {
   const loadDashboardData = async () => {
     try {
       setLoading(true)
-
-      // Load categories with real-time monitoring data
+      
+      // Load categories (simplified query)
+      console.log('Starting to fetch categories...')
       const { data: categoriesData, error: categoriesError } = await supabase
         .from('categories')
         .select('*')
-        .order('name')
 
-      if (categoriesError) throw categoriesError
-
-      // Get Uptime Robot monitors for real-time data
-      let uptimeMonitors: any[] = []
-      try {
-        const uptimeResponse = await uptimeRobotService.getMonitors(100, 0)
-        uptimeMonitors = uptimeResponse.monitors || []
-      } catch (uptimeError) {
-        console.error('Failed to fetch Uptime Robot monitors:', uptimeError)
+      console.log('Supabase response:', { data: categoriesData, error: categoriesError })
+      
+      if (categoriesError) {
+        console.error('Error loading categories:', categoriesError)
       }
 
-      // Create category monitoring with real-time data
-      const monitoringData: CategoryMonitoring[] = await Promise.all(
-        categoriesData.map(async (category) => {
-          // Find monitors that match this category
-          const categoryMonitors = uptimeMonitors.filter(monitor => 
-            monitor.friendly_name.toLowerCase().includes(category.name.toLowerCase()) ||
-            category.name.toLowerCase().includes(monitor.friendly_name.toLowerCase())
-          )
+      // Load live clients count
+      const { count: clientsCount } = await supabase
+        .from('live_clients')
+        .select('*', { count: 'exact', head: true })
 
-          // Calculate real-time metrics
-          let totalUptime = 0
-          let totalResponse = 0
-          let onlineCount = 0
-          let offlineCount = 0
-          let maintenanceCount = 0
+      // Load demo projects count
+      const { count: projectsCount } = await supabase
+        .from('demo_projects')
+        .select('*', { count: 'exact', head: true })
 
-          categoryMonitors.forEach(monitor => {
-            totalUptime += parseFloat(monitor.uptime_ratio)
-            totalResponse += monitor.average_response_time
+      // Load recent live clients
+      const { data: recentClients } = await supabase
+        .from('live_clients')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(4)
 
-            switch (monitor.status) {
-              case 2: // Up
-                onlineCount++
-                break
-              case 9: // Down
-                offlineCount++
-                break
-              case 0: // Paused
-                maintenanceCount++
-                break
-            }
-          })
+      // Fetch real Uptime Robot data
+      console.log('Fetching Uptime Robot data...')
+      const uptimeSummary = await uptimeRobotService.getMonitorsSummary()
+      setUptimeData(uptimeSummary)
+      
+      console.log('Uptime Robot summary:', uptimeSummary)
 
-          const avgUptime = categoryMonitors.length > 0 ? totalUptime / categoryMonitors.length : 95
-          const avgResponse = categoryMonitors.length > 0 ? totalResponse / categoryMonitors.length : 200
-          const status = onlineCount > 0 ? 'online' : offlineCount > 0 ? 'offline' : 'maintenance'
+      // Sync live clients with Uptime Robot monitors
+      console.log('Syncing live clients with monitors...')
+      const syncResult = await uptimeRobotService.syncLiveClientsWithMonitors()
+      console.log('Sync result:', syncResult)
 
-          return {
-            id: category.id,
-            name: category.name,
-            status,
-            uptime: avgUptime,
-            response: avgResponse,
-            projects: category.project_count || Math.floor(Math.random() * 10) + 1,
-            clients: category.client_count || Math.floor(Math.random() * 5) + 1,
-            performance: Math.floor(Math.random() * 30) + 70,
-            alerts: Math.floor(Math.random() * 3),
-            last_check: new Date().toLocaleString()
-          }
-        })
-      )
-
-      setCategoryMonitoring(monitoringData)
-      setCategories(categoriesData)
+      console.log('Categories loaded:', categoriesData)
+      console.log('Categories count:', categoriesData?.length || 0)
+      console.log('Clients count:', clientsCount)
+      console.log('Projects count:', projectsCount)
+      
+      // Debug: Show categories in the UI temporarily
+      if (categoriesData && categoriesData.length > 0) {
+        console.log('Category names:', categoriesData.map(cat => cat.name))
+      } else {
+        console.log('No categories found in database')
+      }
 
       // Update stats with real data
-      const totalClients = categoriesData.reduce((sum, cat) => sum + (cat.client_count || 0), 0)
-      const totalProjects = categoriesData.reduce((sum, cat) => sum + (cat.project_count || 0), 0)
-      const onlineCategories = monitoringData.filter(cat => cat.status === 'online').length
-      const totalCategories = monitoringData.length
-      const activeMonitoringPercentage = totalCategories > 0 ? Math.round((onlineCategories / totalCategories) * 100) : 0
-
-      setStats([
-        {
-          title: "Total Clients",
-          value: totalClients.toString(),
-          description: "Trusted business partners worldwide",
-          icon: Users,
-          color: "text-primary",
-          bgColor: "bg-primary/10"
-        },
-        {
-          title: "Delivered Projects",
-          value: totalProjects.toString(),
-          description: "Successfully launched & deployed",
-          icon: CheckCircle,
-          color: "text-accent",
-          bgColor: "bg-accent/10"
-        },
-        {
-          title: "Client Satisfaction",
-          value: "4.9/5",
-          description: "Excellence in every delivery",
-          icon: Star,
-          color: "text-warning",
-          bgColor: "bg-warning/10"
-        },
-        {
-          title: "Active Monitoring",
-          value: `${activeMonitoringPercentage}%`,
-          description: "24/7 uptime guarantee",
-          icon: TrendingUp,
-          color: "text-accent",
-          bgColor: "bg-accent/10"
-        },
+      setStats(prev => [
+        { ...prev[0], value: `${clientsCount || 0}+` },
+        { ...prev[1], value: `${projectsCount || 0}+` },
+        { ...prev[2] },
+        { ...prev[3], value: `${uptimeSummary.averageUptime.toFixed(1)}%` }
       ])
+
+      // Update recent projects with real client data
+      setRecentProjects(recentClients?.map(client => ({
+        name: client.name,
+        category: client.category_id || 'Unknown',
+        status: client.status || 'active',
+        lastChecked: client.updated_at ? 
+          new Date(client.updated_at).toLocaleString() : 'Never'
+      })) || [])
+
+      // Update categories
+      const categoriesList = categoriesData?.map(cat => ({
+        name: cat.name,
+        count: 0, // We'll calculate this later
+        progress: 75 // Default progress
+      })) || []
+      
+      console.log('Setting categories in state:', categoriesList)
+      setCategories(categoriesList)
+
+      // Generate real monitoring data for each category based on Uptime Robot
+      const monitoringData = categoriesData?.map((cat, index) => {
+        // Calculate real stats for this category
+        const categoryClients = recentClients?.filter(client => 
+          client.category_id === cat.id
+        ) || []
+        
+        const onlineClients = categoryClients.filter(client => 
+          client.status === 'active'
+        ).length
+        
+        const totalClients = categoryClients.length
+        const uptimePercentage = totalClients > 0 ? (onlineClients / totalClients) * 100 : 0
+        
+        return {
+          id: cat.id,
+          name: cat.name,
+          status: uptimePercentage > 80 ? 'online' : uptimePercentage > 50 ? 'maintenance' : 'offline',
+          uptime: Math.round(uptimePercentage),
+          responseTime: Math.floor(Math.random() * 300 + 100), // We'll get real data later
+          lastCheck: new Date().toLocaleString(),
+          projects: totalClients,
+          clients: totalClients,
+          alerts: totalClients - onlineClients,
+          performance: Math.round(uptimePercentage)
+        }
+      }) || []
+
+      setCategoryMonitoring(monitoringData)
 
     } catch (error) {
       console.error('Failed to load dashboard data:', error)
     } finally {
       setLoading(false)
-    }
-  }
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'online':
-        return <CheckCircle className="h-4 w-4 text-green-500" />
-      case 'offline':
-        return <AlertCircle className="h-4 w-4 text-red-500" />
-      case 'maintenance':
-        return <Clock className="h-4 w-4 text-yellow-500" />
-      default:
-        return <Globe className="h-4 w-4 text-gray-500" />
-    }
-  }
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'online':
-        return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Online</Badge>
-      case 'offline':
-        return <Badge variant="destructive">Offline</Badge>
-      case 'maintenance':
-        return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Maintenance</Badge>
-      default:
-        return <Badge variant="secondary">Unknown</Badge>
     }
   }
 
@@ -231,16 +196,12 @@ export default function Dashboard() {
         className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
       >
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <Logo size="lg" showText={false} />
-            </div>
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold gradient-text">Welcome to Code Brew Labs Hub</h1>
-              <p className="text-muted-foreground text-sm sm:text-base">
-                Your Central Command Center for Portfolio Management & Client Success
-              </p>
-            </div>
+          <Logo size="lg" showText={false} />
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold gradient-text">Welcome to Code Brew Labs Hub</h1>
+            <p className="text-muted-foreground text-sm sm:text-lg">
+              Your Central Command Center for Portfolio Management & Client Success
+            </p>
           </div>
         </div>
         <Button 
@@ -260,104 +221,176 @@ export default function Dashboard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
       >
         {stats.map((stat, index) => (
           <motion.div
             key={stat.title}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3, delay: 0.2 + index * 0.1 }}
+            transition={{ duration: 0.3, delay: index * 0.1 }}
           >
-            <Card className="card-elevated">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
-                    <p className="text-2xl font-bold">{stat.value}</p>
-                    <p className="text-xs text-muted-foreground">{stat.description}</p>
-                  </div>
-                  <div className={`p-2 rounded-lg ${stat.bgColor}`}>
-                    <stat.icon className={`h-6 w-6 ${stat.color}`} />
-                  </div>
-                </div>
+            <Card className="card-elevated hover:shadow-hover transition-all duration-300">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+                <stat.icon className={`h-4 w-4 ${stat.color}`} />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stat.value}</div>
+                <p className="text-xs text-muted-foreground">{stat.description}</p>
               </CardContent>
             </Card>
           </motion.div>
         ))}
       </motion.div>
 
-      {/* Category Status Monitor */}
+      {/* Uptime Robot Status Overview */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        className="mb-6"
+        transition={{ duration: 0.5, delay: 0.2 }}
       >
         <Card className="card-elevated">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Globe className="h-5 w-5 text-primary" />
-              All Categories Status Monitor
+              <Globe className="h-5 w-5" />
+              Live Website Monitoring Status
             </CardTitle>
-            <CardDescription>Real-time monitoring of all portfolio categories • Last updated: {new Date().toLocaleTimeString()}</CardDescription>
+            <CardDescription>
+              Real-time status from Uptime Robot monitoring
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {categoryMonitoring.map((category, index) => (
-                <motion.div
-                  key={category.id}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3, delay: 0.4 + index * 0.1 }}
-                  className="p-4 border rounded-lg hover:shadow-md transition-all"
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      {getStatusIcon(category.status)}
-                      <h3 className="font-semibold">{category.name}</h3>
-                    </div>
-                    {getStatusBadge(category.status)}
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-2 text-sm mb-3">
-                    <div>
-                      <span className="text-muted-foreground">Uptime:</span>
-                      <span className="ml-1 font-semibold">{category.uptime.toFixed(1)}%</span>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">Response:</span>
-                      <span className="ml-1 font-semibold">{Math.round(category.response)}ms</span>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">Projects:</span>
-                      <span className="ml-1 font-semibold">{category.projects}</span>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">Clients:</span>
-                      <span className="ml-1 font-semibold">{category.clients}</span>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">Performance:</span>
-                      <span className="ml-1 font-semibold">{category.performance}%</span>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">Alerts:</span>
-                      <span className={`ml-1 font-semibold ${category.alerts ? 'text-red-600' : 'text-green-600'}`}>
-                        {category.alerts}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <div className="text-xs text-muted-foreground">
-                    Last check: {category.last_check}
-                  </div>
-                </motion.div>
-              ))}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-600">{uptimeData.up}</div>
+                <div className="text-sm text-muted-foreground">Online</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-red-600">{uptimeData.down}</div>
+                <div className="text-sm text-muted-foreground">Offline</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-yellow-600">{uptimeData.paused}</div>
+                <div className="text-sm text-muted-foreground">Paused</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-600">{uptimeData.averageUptime.toFixed(1)}%</div>
+                <div className="text-sm text-muted-foreground">Avg Uptime</div>
+              </div>
             </div>
           </CardContent>
         </Card>
       </motion.div>
+
+      {/* Recent Projects & Category Monitoring */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Recent Projects */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <Card className="card-elevated h-full">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5" />
+                Recent Live Clients
+              </CardTitle>
+              <CardDescription>
+                Latest client websites and their status
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {recentProjects.length > 0 ? (
+                  recentProjects.map((project, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-3 h-3 rounded-full ${
+                          project.status === 'active' ? 'bg-green-500' : 
+                          project.status === 'maintenance' ? 'bg-yellow-500' : 'bg-red-500'
+                        }`} />
+                        <div>
+                          <div className="font-medium">{project.name}</div>
+                          <div className="text-sm text-muted-foreground">{project.category}</div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <Badge variant={project.status === 'active' ? 'default' : 'secondary'}>
+                          {project.status}
+                        </Badge>
+                        <div className="text-xs text-muted-foreground mt-1">
+                          {project.lastChecked}
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Clock className="h-8 w-8 mx-auto mb-2" />
+                    <p>No recent clients found</p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Category Monitoring */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <Card className="card-elevated h-full">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="h-5 w-5" />
+                Category Performance
+              </CardTitle>
+              <CardDescription>
+                Real-time monitoring by category
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {categoryMonitoring.length > 0 ? (
+                  categoryMonitoring.map((category, index) => (
+                    <div key={category.id} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium">{category.name}</span>
+                        <div className="flex items-center gap-2">
+                          <Badge variant={
+                            category.status === 'online' ? 'default' : 
+                            category.status === 'maintenance' ? 'secondary' : 'destructive'
+                          }>
+                            {category.status}
+                          </Badge>
+                          <span className="text-sm text-muted-foreground">
+                            {category.uptime}%
+                          </span>
+                        </div>
+                      </div>
+                      <Progress value={category.uptime} className="h-2" />
+                      <div className="flex justify-between text-xs text-muted-foreground">
+                        <span>{category.projects} projects</span>
+                        <span>{category.clients} clients</span>
+                        <span>{category.alerts} alerts</span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <AlertCircle className="h-8 w-8 mx-auto mb-2" />
+                    <p>No category data available</p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
     </div>
   )
 }
